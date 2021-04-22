@@ -1,0 +1,382 @@
+version: "2.0"
+nlu:
+  - intent: new_id_card
+    examples: |
+      - i lost my id card
+      - how do i get a new id card?
+      - i need a new id card
+      - new id card
+      - i need a new insurance card
+      - my insurance card is lost
+      - i can't find my id card
+      - send me a new id card
+      - can you send me a new id card?
+      - order a new id card
+      - I need a new ID card
+      - order new id card
+      - get a new id card
+      - i can't find my ID card
+      - i lost id card
+  - intent: claim_status
+    examples: |
+      - what is the status of my claim?
+      - claim status
+      - has my claim been processed?
+      - tell me about my claim
+      - has my claim been paid?
+      - was my claim paid?
+      - what do i owe on my claim?
+      - i want to check the status of my claim
+      - what is the status of claim [X123456](claim_id)
+      - has claim [YY4567890](claim_id) been paid?
+      - check the status of claim [ZZ643421](claim_id)
+      - check the status of a claim
+      - I need to check my claim status
+      - check claim status
+      - view my claims
+      - show my claims
+      - view my recent claims
+      - show me my claims
+      - what is my claim history
+      - get claim status
+      - show some claims
+      - check claim id 748536
+      - check the status of claim [NC239062](claim_id)
+      - has my claim been submitted?
+      - what is the status of claim [XX123456](claim_id)[XX123456](claim_id)
+      - check up on a claim
+      - what is the status of claim [XX123456](claim_id)
+      - what is the status of claim [NC709186](claim_id)[NC709186](claim_id)?
+      - what is the status of my recent claim?
+      - check the status of claim [NC339723](claim_id)[NC339723](claim_id)
+      - check status of my claim
+      - check on my claim status
+  - intent: file_a_claim
+    examples: |
+      - file a claim
+      - make a claim
+      - i need to file a claim
+      - submit a claim
+      - submit a new claim
+      - make a new claim
+      - i crashed my [car]{"entity": "quote_insurance_type", "value": "auto"}
+      - file new claim
+      - file a [health](quote_insurance_type) insurance claim
+      - file [health](quote_insurance_type) insurance claim
+      - a tree fell on my [house](quote_insurance_type)
+      - file a [life](quote_insurance_type) insurance claim
+      - i had a procedure and need to file a claim
+      - actually file a claim
+      - i was in a [car]{"entity": "quote_insurance_type", "value": "auto"} crash
+      - file a new claim
+  - intent: make_payment
+    examples: |
+      - pay a [claim](payment_type)
+      - make a payment
+      - pay off a [claim](payment_type)
+      - pay what i owe
+      - pay my bill
+      - submit a payment
+      - pay [claim](payment_type)
+      - pay bill
+      - i want to pay a [claim](payment_type)
+      - make a [claim](payment_type) payment
+      - payment
+      - bill
+      - what's my bill
+      - do i owe a payment
+      - pay my deductible
+  - intent: inform
+    examples: |
+      - 34
+      - abc
+      - 16
+      - 75
+      - 1234567
+      - health
+      - life
+      - car
+      - home
+      - 123456
+      - 100
+      - 234567
+      - 123
+      - [CC221322](claim_id)
+      - [CL221233](claim_id)
+      - [A211233](claim_id)
+      - 1500
+      - 100000
+      - 1,00,000
+      - 123457
+      - [New York](state)
+      - [Arizona](state)
+      - [New Jersey](state)
+      - [West Virginia](state)
+      - [Arkansas](state)
+      - [Washington](state)
+      - [new york](state)
+      - [Rhode Island](state)
+      - [Oregon](state)
+      - [Hawaii](state)
+      - [oklahoma](state)
+      - [california](state)
+      - [Texas](state)
+      - [arizona](state)
+      - 3
+      - [NY](state)
+      - 2
+      - [NM](state)
+      - 4
+      - Albany
+      - [AA12054](claim_id)
+      - 32 Alden Ct
+      - wyoming
+      - Lynn
+      - 12345
+      - 123 Fifth Ave
+      - Austin
+      - [AB234567](claim_id)
+      - [12054](claim_id)
+      - Jackson
+      - [Wyoming](state)
+      - 6
+      - 123 Chestnut St
+      - 7 Maple Ave
+      - [MA](state)
+      - $100
+      - [Wisconsin]{"entity": "state", "value": "WI"}
+      - 1
+      - [Montana]{"entity": "state", "value": "MT"}
+      - [Michigan]{"entity": "state", "value": "MI"}
+      - 1000
+      - $1000
+      - 90210
+      - 7 Maple Ave.
+      - Boston
+      - [AZ](state)
+      - [Arizona](state) is valid
+      - 221322
+      - 221233
+      - 211233
+      - my whole family
+      - [Maryland]{"entity": "state", "value": "MD"}[Maryland]{"entity": "state", "value": "MD"}
+      - myself
+      - just me
+      - 30
+      - 125 Main Ave
+      - [Ohio]{"entity": "state", "value": "OH"}
+      - Cincy
+      - 123 Main Ave
+      - 123 Main Ave.
+      - Cincinnati
+      - [Maryland]{"entity": "state", "value": "MD"}
+      - 5000
+      - 7 Chestnut St
+      - [Vermont]{"entity": "state", "value": "VT"}
+      - $400
+      - 8 Mirror Lake Dr
+      - Lake Placid
+      - 10
+      - 123 Main St
+      - Little Falls
+      - 7 Maple Ln
+      - Queensbury
+  - intent: get_a_quote
+    examples: |
+      - i need insurance
+      - i need [health](quote_insurance_type) insurance
+      - i need a quote
+      - i need a quote for [car](quote_insurance_type) insurance
+      - how much will [healthcare](quote_insurance_type) insurance cost?
+      - can you give me a quote for [life](quote_insurance_type) insurance?
+      - quote
+      - insurance quote
+      - can you give me a quote?
+      - how much will coverage cost?
+      - how much will insurance cost?
+      - can i get an insurance quote?
+      - i need an insurance quote
+      - give me a [health](quote_insurance_type) insurance quote
+      - get a quote
+      - i'm looking to purchase insurance
+      - i'm in the market to get [life](quote_insurance_type) insurance
+      - get new insurance
+      - i need [car]{"entity": "quote_insurance_type", "value": "auto"} insurance
+      - i need to insure my [car]{"entity": "quote_insurance_type", "value": "auto"}
+  - intent: greet
+    examples: |
+      - hey
+      - hello
+      - hi
+      - hello there
+      - good morning
+      - good evening
+      - moin
+      - hey there
+      - let's go
+      - hey dude
+      - goodmorning
+      - goodevening
+      - good afternoon
+      - hi ther
+      - hi there
+      - heyo
+      - howdy
+  - intent: goodbye
+    examples: |
+      - good afternoon
+      - cu
+      - good by
+      - cee you later
+      - good night
+      - bye
+      - goodbye
+      - have a nice day
+      - see you around
+      - bye bye
+      - see you later
+      - ciao
+      - thank you too
+      - oh that's nice thank you
+      - byeee
+      - adios
+      - cya
+      - see ya later
+      - good bye
+      - have a good one
+  - intent: affirm
+    examples: |
+      - yes
+      - y
+      - indeed
+      - of course
+      - that sounds good
+      - correct
+      - yes obviously
+      - yup
+      - yes please
+      - yeah
+      - yes plz
+      - sure
+      - Ok
+      - cool
+      - Yes
+  - intent: deny
+    examples: |
+      - no
+      - n
+      - never
+      - I don't think so
+      - don't like that
+      - no way
+      - not really
+      - nope
+      - no thank you
+      - nah
+      - No
+      - i doubt it
+      - No thanks!
+      - ni
+      - not right now
+      - no thanks
+  - intent: stop
+    examples: |
+      - nevermind
+      - stop
+      - cancel
+      - exit
+      - quit
+      - i'm done
+      - go back
+      - stop this
+      - cancel form
+      - actually nevermind
+  - intent: uncertain
+    examples: |
+      - i don't know
+      - i'm not sure
+      - idk
+      - i do not know
+      - i dont know
+      - i don't know the ID
+      - uncertain
+      - don't know
+      - who knows
+      - i'm uncertain
+      - i don't know for sure
+  - intent: bot_challenge
+    examples: |
+      - are you a bot?
+      - are you a human?
+      - am I talking to a bot?
+      - am I talking to a human?
+      - what else can you do?
+  - intent: update_member_info
+    examples: |
+      - address change
+      - i need to change my address
+      - update address
+      - update my address
+      - change my address
+      - help me update my member info
+      - update my info
+      - update my information
+      - i moved to a new address
+      - i just moved
+      - change my info
+      - change address
+  - intent: out_of_scope
+    examples: |
+      - what is the weather?
+      - how is the weather in New York
+      - what's for dinner?
+      - tell me about insurance?
+      - what's my coverage?
+      - what am i covered for?
+  - intent: nlu_fallback
+    examples: |
+      - tell me how to change a tire
+      - something totally random
+      - i don't want insurance
+  - intent: ask_for_help
+    examples: |
+      - tell me about yourself
+      - help
+      - i need help
+      - help me
+      - i'm lost
+      - i'm confused
+      - can you help me?
+      - i need assistance
+  - synonym: auto
+    examples: |
+      - car
+      - automobile
+  - synonym: WI
+    examples: |
+      - Wisconsin
+  - synonym: MT
+    examples: |
+      - Montana
+  - synonym: MI
+    examples: |
+      - Michigan
+  - synonym: MD
+    examples: |
+      - Maryland
+  - synonym: OH
+    examples: |
+      - Ohio
+  - synonym: VT
+    examples: |
+      - Vermont
+  - synonym: AZ
+    examples: |
+      - arizona
+  - synonym: healh
+    examples: |
+      - healthcare
+      - health care
+  - regex: claim_id
+    examples: |
+      - [a-z]{1,2}\d{5,7}
