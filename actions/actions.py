@@ -52,6 +52,7 @@ from rasa_sdk.types import DomainDict
 logger = logging.getLogger(__name__)
 
 MOCK_DATA = json.load(open("actions/mock_data.json", "r"))
+NEW_POLICIES = json.load(open("actions/new_policies", "r"))
 
 US_STATES = ["AZ", "AL", "AK", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY",
              "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH",
@@ -965,3 +966,18 @@ def claims_scroll(curr_page, scroll_status):
     return {"page": curr_page,
             "claims": clm_params,
             "is_last_page": curr_page + 1 >= len(MOCK_DATA["claims"])}
+
+    
+class NotifyNewpolicies(Action):
+
+    def name(self) -> Text:
+
+        return "notify_new_policies"
+
+    async def run(
+        self, dispatcher, tracker: Tracker, domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+
+        policies = [policy["policy_name"] for policy in NEW_POLICIES["hot_policies"]] 
+        dispatcher.utter_message(text= f"The hottest policy available is {policies[0]}")
+        return []

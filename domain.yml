@@ -41,6 +41,8 @@ intents:
       use_entities: true
   - stop:
       use_entities: true
+  - recommend_new_policies:
+      use_entities: true
 entities:
   - claim_id
   - quote_insurance_type
@@ -424,6 +426,7 @@ actions:
   - validate_file_new_claim_form
   - action_recent_claims
   - action_check_claim_balance
+  - notify_new_policies
 forms:
   quote_form:
     AA_quote_insurance_type:

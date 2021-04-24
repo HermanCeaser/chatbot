@@ -196,3 +196,7 @@ stories:
     steps:
       - intent: ask_for_help
       - action: utter_my_capability
+  - story: member wants recommendation of new policies
+    steps: 
+      - intent: recommend_new_policies
+      - action: notify_new_policies

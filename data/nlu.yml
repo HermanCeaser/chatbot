@@ -348,6 +348,12 @@ nlu:
       - i'm confused
       - can you help me?
       - i need assistance
+  - intent: recommend_new_policies
+    examples: |
+      - do you have any other policies
+      - can you recommend any policies
+      - are there any hot policies
+      - which policies can suit me
   - synonym: auto
     examples: |
       - car
