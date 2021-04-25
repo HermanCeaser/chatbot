@@ -49,7 +49,7 @@ from rasa_sdk.types import DomainDict
 logger = logging.getLogger(__name__)
 
 MOCK_DATA = json.load(open("actions/mock_data.json", "r"))
-NEW_POLICIES = json.load(open("actions/new_policies", "r"))
+NEW_POLICIES = json.load(open("actions/new_policies.json", "r"))
 
 US_STATES = ["AZ", "AL", "AK", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY",
              "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH",
