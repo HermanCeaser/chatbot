@@ -40,6 +40,9 @@ pipeline:
     analyzer: char_wb
     min_ngram: 1
     max_ngram: 4
+  - name: DucklingEntityExtractor
+    url: 'http://localhost:8000'
+    dimensions: null
   - name: RegexEntityExtractor
     case_sensitive: false
     use_lookup_tables: true

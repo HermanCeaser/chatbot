@@ -5,8 +5,9 @@ rules:
       - intent: greet
       - action: utter_greet
   - rule: Recommend new policy everytime a user asks for recommendation
+    steps:
       - intent: recommend_new_policies
-      - action: action_notify_new_policies
+      - action: notify_new_policies
   - rule: Say goodbye anytime the user says goodbye
     steps:
       - intent: goodbye
