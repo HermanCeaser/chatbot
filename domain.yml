@@ -53,7 +53,51 @@ entities:
   - state
   - ordinal
   - phone-number
+  - quote_number_persons
+  - insurance_provider
+  - firstname
+  - lastname
+  - dob
+  - gender
+  - coverage
+  - policy_duration
+  - annual_income
+
 slots:
+  insurance_provider:
+    type: rasa.shared.core.slots.TextSlot
+    auto_fill: false
+    influence_conversation: false
+  firstname:
+    type: rasa.shared.core.slots.TextSlot
+    auto_fill: false
+    influence_conversation: false
+  lastname:
+    type: rasa.shared.core.slots.TextSlot
+    auto_fill: false
+    influence_conversation: false
+  dob:
+    type: rasa.shared.core.slots.AnySlot
+    auto_fill: false
+    influence_conversation: false
+  gender: 
+    type: rasa.shared.core.slots.CategoricalSlot
+    values:
+        - Male 
+        - Female
+    influence_conversation: false
+  coverage:
+    type: float 
+    auto_fill: false
+    influence_conversation: false
+  annual_income:
+    type: float 
+    auto_fill: false
+    influence_conversation: false
+  policy_duration:
+    type: list 
+    auto_fill: false
+    influence_conversation: false
   address_city:
     type: rasa.shared.core.slots.AnySlot
     initial_value: null
@@ -441,6 +485,41 @@ forms:
         type: from_text
     quote_state:
       - entity: state
+        type: from_entity
+      - not_intent: stop
+        type: from_text
+  buy_insurance_form:
+    insurance_provider:
+      - entity: insurance_provider
+        type: from_entity
+    insurance_type:
+      - entity: quote_insurance_type
+        type: from_entity
+    firstname:
+      - entity: firstname
+        type: from_entity
+      - type: from_text
+    lastname:
+      - entity: lastname
+        type: from_entity
+      - type: from_text
+    dob:
+      - entity: dob
+        type: from_entity
+      - type: from_text
+    gender:
+      - entity: gender
+        type: from_entity
+    coverage:
+      - type: from_text
+      - type: from_entity
+        entity: coverage
+    annual_income:
+      - type: from_entity
+        entity: annual_income
+      - type: from_text
+    policy_duration:
+      - entity: policy_duration
         type: from_entity
       - not_intent: stop
         type: from_text

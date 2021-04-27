@@ -8,6 +8,17 @@ stories:
       - active_loop: null
       - action: action_get_quote
       - action: utter_anything_else
+  - story: member wants an insurance quote with no of people and location (happy path)
+    steps:
+      - intent: get_a_quote
+        entities:
+          - quote_insurance_type: life
+          - quote_number_persons: 2
+          - quote_state: california
+      - action: quote_form
+      - active_loop: null
+      - action: action_get_quote
+      - action: utter_anything_else
   - story: member wants a new insurance quote (happy path)
     steps:
       - intent: get_a_quote

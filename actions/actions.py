@@ -1,6 +1,5 @@
 
 
-
 # This is a simple example for a custom action which utters "Hello World!"
 
 # from typing import Any, Text, Dict, List
@@ -147,7 +146,7 @@ class ValidateQuoteForm(FormValidationAction):
         try:
             int(value)
         except TypeError:
-            dispatcher.utter_message(f"Number of persons must be an integer.")
+            dispatcher.utter_message(f"Number of persons must be a number.")
             return {"quote_number_persons": None}
         except ValueError:
             dispatcher.utter_message("You must answer with a number.")
@@ -963,7 +962,7 @@ def claims_scroll(curr_page, scroll_status):
             "claims": clm_params,
             "is_last_page": curr_page + 1 >= len(MOCK_DATA["claims"])}
 
-    
+
 class NotifyNewpolicies(Action):
 
     def name(self) -> Text:
@@ -974,6 +973,8 @@ class NotifyNewpolicies(Action):
         self, dispatcher, tracker: Tracker, domain: Dict[Text, Any],
     ) -> List[Dict[Text, Any]]:
 
-        policies = [policy["policy_name"] for policy in NEW_POLICIES["hot_policies"]] 
-        dispatcher.utter_message(text= f"The hottest policy available is {policies[0]}")
+        policies = [policy["policy_name"]
+                    for policy in NEW_POLICIES["hot_policies"]]
+        dispatcher.utter_message(
+            text=f"The hottest policy available is {policies[0]}")
         return []

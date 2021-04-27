@@ -1,5 +1,46 @@
 version: "2.0"
 nlu:
+  # - intent: buy_insurance/ask_firstname
+  #   examples: |
+  #     - What is your first name?
+  #     - May i have your religious name?
+  #     - What is your name?
+  #     - Can i have your name?
+  #     - Enter your First name
+  # - intent: buy_insurance/ask_lastname
+  #   examples: |
+  #     - What is your last name?
+  #     - May i have your surname?
+  #     - What is your surname?
+  #     - Can i have your surname?
+  #     - Enter your lastname
+  # - intent: buy_insurance/ask_dob
+  #   examples: |
+  #     - what is your date of birth?
+  #     - Enter your date of birth in the format "yyyy/mm/dd"
+  #     - what is your birth date?
+  # - intent: buy_insurance/ask_city
+  #   examples: |
+  #     - Where do you live?
+  #     - Which city do you live in?
+  #     - What is your current address?
+  #     - Enter your address?
+  # - intent: buy_insurance/ask_income
+  #   examples: |
+  #     - How much do you earn annually
+  #     - What is your estimated income per year?
+  #     - What is your current address?
+  #     - Enter your address?
+  - intent: buy_insurance
+    examples: |
+      - i would to buy an insurance policy
+      - i need to get a new policy
+      - i want an insurance policy
+      - i need a [life](quote_insurance_type) insurance policy
+      - buy insurance
+      - get insurance policy
+      - i need a policy
+      - get a policy
   - intent: new_id_card
     examples: |
       - i lost my id card
@@ -188,6 +229,8 @@ nlu:
       - i need a quote
       - i need a quote for [car](quote_insurance_type) insurance
       - how much will [healthcare](quote_insurance_type) insurance cost?
+      - can i get a quote for [3](quote_num_persons) people on [healthcare](quote_insurance_type) insurance
+      - how much will [health](quote_insurance_type) insurance for [2](quote_number_persons) in [New york](state) cost?
       - can you give me a quote for [life](quote_insurance_type) insurance?
       - quote
       - insurance quote
@@ -378,7 +421,7 @@ nlu:
   - synonym: AZ
     examples: |
       - arizona
-  - synonym: healh
+  - synonym: health
     examples: |
       - healthcare
       - health care
