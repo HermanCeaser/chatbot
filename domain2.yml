@@ -1,0 +1,625 @@
+version: "2.0"
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
+intents:
+  - buy_insurance
+  - uncertain
+  - goodbye
+  - inform
+  - ask_for_help
+  - greet
+  - affirm
+  - deny
+  - bot_challenge
+  - new_id_card
+  - claim_status
+  - get_a_quote
+  - update_member_info
+  - file_a_claim
+  - out_of_scope
+  - nlu_fallback
+  - make_payment
+  - cancel_action
+  - stop
+  - recommend_new_policies
+entities:
+  - amount-of-money
+  - annual_income
+  - claim_id
+  - coverage
+  - dob
+  - fullname
+  - gender
+  - insurance_provider
+  - number
+  - ordinal
+  - payment_type
+  - phone-number
+  - policy_duration
+  - quote_insurance_type
+  - quote_number_persons
+  - scroll_status
+  - state
+slots:
+  insurance_provider:
+    type: any
+    auto_fill: false
+    influence_conversation: false
+  insurance_policy_type:
+    type: categorical
+    influence_conversation: false
+    values:
+      - life
+      - home
+      - auto
+      - health
+  fullname:
+    type: text
+    auto_fill: false
+    influence_conversation: false
+  dob:
+    type: text
+    auto_fill: false
+    influence_conversation: false
+  gender:
+    type: categorical
+    influence_conversation: true
+    values:
+      - male
+      - female
+  number_of_persons:
+    type: any
+    auto_fill: false
+    influence_conversation: false
+  coverage:
+    type: float
+    auto_fill: false
+    influence_conversation: false
+    max_value: 1.0
+    min_value: 0.0
+  annual_income:
+    type: float
+    auto_fill: false
+    influence_conversation: false
+    max_value: 1.0
+    min_value: 0.0
+  policy_duration:
+    type: any
+    auto_fill: false
+    influence_conversation: false
+  address_city:
+    type: any
+    influence_conversation: false
+  address_state:
+    type: any
+    influence_conversation: false
+  address_street:
+    type: any
+    influence_conversation: false
+  address_zip:
+    type: any
+    influence_conversation: false
+  amount-of-money:
+    type: any
+    influence_conversation: false
+  claim_amount_submit:
+    type: any
+    influence_conversation: false
+  claim_balance:
+    type: any
+    influence_conversation: false
+  claim_id:
+    type: text
+    influence_conversation: true
+  claim_pay_amount:
+    type: any
+    auto_fill: false
+    influence_conversation: false
+  claims:
+    type: any
+    influence_conversation: false
+  confirm_file_new_claim:
+    type: bool
+    influence_conversation: true
+  confirm_payment:
+    type: bool
+    influence_conversation: true
+  full_address:
+    type: any
+    influence_conversation: false
+  has_outstanding_balance:
+    type: bool
+    influence_conversation: true
+  number:
+    type: any
+    influence_conversation: false
+  page:
+    type: any
+    influence_conversation: false
+  AA_quote_insurance_type:
+    type: categorical
+    influence_conversation: false
+    values:
+      - life
+      - home
+      - auto
+      - health
+  quote_number_persons:
+    type: any
+    auto_fill: false
+    influence_conversation: false
+  quote_state:
+    type: any
+    influence_conversation: false
+  recent_claims:
+    type: any
+    influence_conversation: false
+  requested_slot:
+    type: any
+    influence_conversation: false
+  scroll_active_claim:
+    type: text
+    influence_conversation: true
+  scroll_claims:
+    type: any
+    influence_conversation: false
+  scroll_status:
+    type: text
+    influence_conversation: true
+  state:
+    type: text
+    influence_conversation: false
+  verify_address:
+    type: bool
+    influence_conversation: true
+responses:
+  utter_get_best_rates:
+    - text: To get you the best plans, i need to get a few quick details.
+  utter_ask_fullname:
+    - text: Can i have your fullname as displayed on National ID?
+  utter_ask_insurance_provider:
+    - buttons:
+        - payload: /inform{{"insurance_provider":"Jubilee"}}
+          title: Jubilee
+        - payload: /inform{{"insurance_provider":"Prudential"}}
+          title: Prudential
+        - payload: /inform{{"insurance_provider":"UAP"}}
+          title: UAP
+        - payload: /inform{{"insurance_provider":"ICEA"}}
+          title: ICEA
+        - payload: /inform{{"insurance_provider":"SWICO"}}
+          title: SWICO
+      text: Select an insurance provider
+  utter_ask_insurance_policy_type:
+    - buttons:
+        - payload: /inform{{"insurance_policy_type":"health"}}
+          title: Health
+        - payload: /inform{{"insurance_policy_type":"life"}}
+          title: Life
+        - payload: /inform{{"insurance_policy_type":"auto"}}
+          title: Auto
+        - payload: /inform{{"insurance_policy_type":"home"}}
+          title: Home
+      text: What kind of insurance would you like to buy?
+  utter_ask_dob:
+    - text: How about your date of birth? {in the format dd/mm/yyyy}
+  utter_ask_coverage:
+    - text: |-
+        And what is the coverage amount your looking for?
+        1. $40,000
+        2. $70,000
+        3. $100,000
+  utter_ask_policy_duration:
+    - text: |-
+        Please choose a policy duration\n
+        1. 3 years
+        2. 5 years
+        3. 10 years
+  utter_number_of_persons:
+    - text: How many people do you want to include on your policy?
+  utter_ask_annual_income:
+    - text: How much do you earn a year?
+  utter_ask_gender:
+    - buttons:
+        - payload: /inform{{"gender":"male"}}
+          title: Male
+        - payload: /inform{{"gender":"female"}}
+          title: Female
+      text: How about your gender?
+  utter_ask_address_street:
+    - text: What is your mailing street number and name?
+  utter_ask_address_city:
+    - text: What city do you live in?
+  utter_ask_address_state:
+    - text: What state do you live in?
+  utter_ask_address_zip:
+    - text: What is your mailing zip code?
+  utter_ask_file_new_claim_form_claim_amount_submit:
+    - text: How much are you claiming?
+  utter_ask_file_new_claim_form_confirm_file_new_claim:
+    - buttons:
+        - payload: /affirm
+          title: Yes
+        - payload: /deny
+          title: No
+      text: "Would you to submit a {AA_quote_insurance_type} claim for ${claim_amount_submit}?"
+  utter_ask_knows_claim_id:
+    - buttons:
+        - payload: /affirm
+          title: Yes
+        - payload: /deny
+          title: No
+      text: Do you know the claim ID you want to check?
+  utter_ask_quote_form_AA_quote_insurance_type:
+    - buttons:
+        - payload: /inform{{"quote_insurance_type":"health"}}
+          title: Health
+        - payload: /inform{{"quote_insurance_type":"life"}}
+          title: Life
+        - payload: /inform{{"quote_insurance_type":"auto"}}
+          title: Auto
+        - payload: /inform{{"quote_insurance_type":"home"}}
+          title: Home
+      text: What kind of insurance are you interested in?
+  utter_ask_file_new_claim_form_AA_quote_insurance_type:
+    - buttons:
+        - payload: /inform{{"quote_insurance_type":"health"}}
+          title: Health
+        - payload: /inform{{"quote_insurance_type":"life"}}
+          title: Life
+        - payload: /inform{{"quote_insurance_type":"auto"}}
+          title: Auto
+        - payload: /inform{{"quote_insurance_type":"home"}}
+          title: Home
+      text: What type of claim would you like to file?
+  utter_ask_quote_form_quote_number_persons:
+    - text: How many people do you want to include on the policy for your quote?
+  utter_ask_quote_form_quote_state:
+    - text: What state would you like your quote for?
+  utter_anything_else:
+    - text: Is there anything else I can help you with?
+  utter_ask_claim_pay_amount:
+    - text: "Claim {claim_id} has an outstanding balance of ${claim_balance}. How much would you like to pay?"
+  utter_ask_claim_status_form_claim_id:
+    - text: What is the claim ID you'd like to lookup?
+  utter_ask_confirm_address:
+    - buttons:
+        - payload: /affirm
+          title: Yes
+        - payload: /deny
+          title: No
+      text: |-
+        Is this address correct?
+
+        {address_street}
+        {address_city}, {address_state} {address_zip}
+  utter_ask_get_claim_form_claim_id:
+    - text: What is the ID of the claim you'd like to lookup?
+  utter_ask_pay_claim_form_claim_id:
+    - text: What claim would you like to make a payment for?
+  utter_ask_pay_claim_form_confirm_payment:
+    - buttons:
+        - payload: /affirm{{"confirm_payment":"true"}}
+          title: Yes
+        - payload: /deny{{"confirm_payment":"false"}}
+          title: No
+      text: "Would you like to pay ${claim_pay_amount} for claim {claim_id}?"
+  utter_ask_pay_claim_form_amount-of-money:
+    - text: "Claim {claim_id} has an outstanding balance of ${claim_balance}. How much would you like to pay?"
+  utter_ask_update_address:
+    - buttons:
+        - paylaod: /affirm
+          title: Yes
+        - payload: /deny
+          title: No
+      text: Would you like to update your address?
+  utter_cancel_address_change:
+    - text: No problem. Your address change request has been canceled.
+  utter_cancel_info_update:
+    - text: Ok. You can always check back to update your info later!
+  utter_cancel_new_claim_file:
+    - text: Filing a new claim has been canceled.
+  utter_cancel_payment:
+    - text: Your payment has been cancelled.
+  utter_claim_payment_success:
+    - text: |-
+        Thank you for your claim payment of ${amount_to_pay} for claim {claim_id}.
+
+        The remaining balance for the claim is ${claim_balance}
+  utter_confirm_address:
+    - buttons:
+        - payload: /affirm
+          title: Yes
+        - payload: /deny
+          title: No
+      text: |-
+        Is this your current address?
+        {full_address}
+  utter_final_quote:
+    - text: |-
+        Your monthly payment given the information provided is: ${final_quote} per month
+
+        Insurance Type: {insurance_type}
+        Policy State: {quote_state}
+        Number of people on policy: {n_persons}
+  utter_buy_insurance:
+    - text: |-
+        {first_name}, Based on your details, your premium would be:
+          1. ${final_rate} per month for {policy_duration} if you are to pay monthly
+          2. ${final_rate * 4} for {policy_duration} if you are to pay quarterly
+          3. ${final_rate * 12} for {policy_duration} if you are to pay annually.
+
+        Policy Details: 
+        Insurance Provider: {insurance_provider}
+        Insurance Policy: {insurance_type}
+        Policy Holder: {policy_holder}
+        Sum assured: {sum_assured}
+        Number of people on policy: {n_persons} 
+
+        Here is the payment link in should you want to go ahead now. https://vidabot.com/buy_insurance_policy/
+  utter_greet:
+    - buttons:
+        - payload: /claim_status
+          title: Check Claim Status
+        - payload: /new_id_card
+          title: Order New ID Card
+        - payload: /make_a_payment
+          title: Pay a Claim
+        - payload: /get_a_quote
+          title: Get a Quote
+        - payload: /file_a_claim
+          title: File a Claim
+      text: Howdy! What can I help you with today?
+  utter_has_no_balance:
+    - text: This claim has no outstanding balance.
+  utter_here_are_recent_claims:
+    - text: Okay. Here are some of your recent claims.
+  utter_new_id_address_change:
+    - text: Okay. Let's update your address so your new ID cards are sent to the right address.
+  utter_new_id_card:
+    - text: Sure, I can help you get a new id card!
+  utter_notify_active_claim:
+    - text: Thanks! You have selected claim {claim_id}.
+  utter_pay_outstanding_balance:
+    - text: Looks like your claim has an outstanding balance would you like to make a payment?
+  utter_scroll_status_next:
+    - buttons:
+        - payload: /inform{{"scroll_status":"next"}}
+          title: Next
+        - payload: /inform{{"scroll_status":"select"}}
+          title: Select
+        - payload: /inform{{"scroll_status":"cancel"}}
+          title: Cancel
+      text: What would you like to do next?
+  utter_scroll_status_prev:
+    - buttons:
+        - payload: /inform{{"scroll_status":"prev"}}
+          title: Previous
+        - payload: /inform{{"scroll_status":"select"}}
+          title: Select
+        - payload: /inform{{"scroll_status":"cancel"}}
+          title: Cancel
+      text: What would you like to do next?
+  utter_scroll_status_prev_next:
+    - buttons:
+        - payload: /inform{{"scroll_status":"prev"}}
+          title: Previous
+        - payload: /inform{{"scroll_status":"select"}}
+          title: Select
+        - payload: /inform{{"scroll_status":"next"}}
+          title: Next
+        - payload: /inform{{"scroll_status":"cancel"}}
+          title: Cancel
+      text: What would you like to do next?
+  utter_claims_scroll_exit_suggest_action:
+    - text: I can also help you make a payment towards one of your claims.
+  utter_claim_detail:
+    - text: 'Claim ID: {claim_id}\nClaim Date: {claim_date}\nAmount Owed: {claim_balance}\nClaim Status: {claim_status}'
+  utter_claim_id_provided:
+    - text: Let me get the status for claim {claim_id}
+  utter_claim_status:
+    - text: Get the claim status. Ask for claim ID. Maybe suggest latest claim?
+  utter_did_that_help:
+    - text: Did that help you?
+  utter_happy:
+    - text: Great, carry on!
+  utter_goodbye:
+    - text: Okay. I'll be here to help you with all of your future insurance needs. Have a stupendous day!
+  utter_iamabot:
+    - text: I am a bot, powered by Rasa.
+  utter_zero_balance:
+    - text: Claim {claim_id} is fully paid.
+  utter_out_of_scope:
+    - text: I don't understand what you're asking.
+  utter_please_rephrase:
+    - text: I didn't quite understand that. Could you please rephrase?
+  utter_chitchat:
+    - text: This is a piece of chitchat.
+  utter_default:
+    - text: Sorry I didn't get that. Can you rephrase?
+  utter_cancel_insurance_quote:
+    - text: Ok. I can help you get an insurance quote another time!
+  utter_new_card_address:
+    - text: Sure thing. I can send you a new ID card. First, let's make sure I send it to the correct address.
+  utter_start_new_id_order:
+    - text: I can help you get a new ID card. First, let's confirm some information.
+  utter_my_capability:
+    - text: I can help manage your insurance account by reviewing claims, making claim payments, ordering a new ID card, and getting a quote for insurance.
+  utter_acknowledge_update_info:
+    - text: Certainly. I can help you update your address. Let's look at the address on file.
+  utter_start_new_quote:
+    - text: I can help you get a new insurance quote. Let's learn a little more about you.
+actions:
+  - action_ask_recent_claim
+  - action_ask_recent_claims
+  - action_ask_scroll_claims
+  - action_ask_verify_address
+  - action_buy_insurance
+  - action_cancel_payment
+  - action_check_claim_balance
+  - action_claim_status
+  - action_file_new_claim_form
+  - action_get_address
+  - action_get_quote
+  - action_new_id_card
+  - action_pay_claim
+  - action_recent_claims
+  - action_reset_address
+  - action_scroll_claims_form_exit
+  - action_stop_new_claim_form
+  - action_stop_quote
+  - action_update_address
+  - action_verify_address_form
+  - notify_new_policies
+  - utter_anything_else
+  - utter_get_best_rates
+  - utter_goodbye
+  - utter_happy
+  - validate_buy_insurance_form
+  - validate_change_address_form
+  - validate_claim_status_form
+  - validate_file_new_claim_form
+  - validate_get_claim_form
+  - validate_pay_claim_form
+  - validate_quote_form
+  - validate_scroll_claims_form
+  - validate_verify_address_form
+forms:
+  quote_form:
+    AA_quote_insurance_type:
+      - entity: quote_insurance_type
+        type: from_entity
+      - not_intent: stop
+        type: from_text
+    quote_number_persons:
+      - entity: quote_number_persons
+        type: from_entity
+      - not_intent: stop
+        type: from_text
+    quote_state:
+      - entity: state
+        type: from_entity
+      - not_intent: stop
+        type: from_text
+  buy_insurance_form:
+    insurance_provider:
+      - entity: insurance_provider
+        type: from_entity
+    insurance_policy_type:
+      - entity: quote_insurance_type
+        type: from_entity
+      - not_intent: get_a_quote
+        type: from_text
+    number_of_persons:
+      - entity: quote_number_persons
+        type: from_entity
+      - not_intent: stop
+        type: from_text
+      - entity: number
+        type: from_entity
+    fullname:
+      - entity: fullname
+        type: from_entity
+      - type: from_text
+    dob:
+      - entity: dob
+        type: from_entity
+      - type: from_text
+    gender:
+      - entity: gender
+        type: from_entity
+    annual_income:
+      - type: from_entity
+        entity: annual_income
+      - type: from_text
+      - not_intent: get_a_quote
+        type: from_text
+    coverage:
+      - entity: coverage
+        type: from_entity
+      - entity: number
+        type: from_entity
+      - type: from_text
+      - not_intent: get_a_quote
+        type: from_text
+    policy_duration:
+      - entity: policy_duration
+        type: from_entity
+      - not_intent: stop
+        type: from_text
+  get_claim_form:
+    claim_id:
+      - entity: claim_id
+        type: from_entity
+      - type: from_text
+  change_address_form:
+    address_city:
+      - not_intent: stop
+        type: from_text
+    address_state:
+      - entity: state
+        type: from_entity
+    address_street:
+      - not_intent: stop
+        type: from_text
+    address_zip:
+      - not_intent: stop
+        type: from_text
+  pay_claim_form:
+    claim_id:
+      - entity: claim_id
+        type: from_entity
+      - not_intent:
+          - uncertain
+          - deny
+          - claim_status
+        type: from_text
+    claim_pay_amount:
+      - entity: amount-of-money
+        type: from_entity
+      - entity: number
+        type: from_entity
+      - not_intent:
+          - uncertain
+          - deny
+        type: from_text
+    confirm_payment:
+      - intent: affirm
+        type: from_intent
+        value: true
+      - intent: deny
+        type: from_intent
+        value: false
+  scroll_claims_form:
+    scroll_claims:
+      - entity: scroll_claims
+        not_intent: uncertain
+        type: from_entity
+      - type: from_text
+  file_new_claim_form:
+    AA_quote_insurance_type:
+      - entity: quote_insurance_type
+        type: from_entity
+      - not_intent: stop
+        type: from_text
+    claim_amount_submit:
+      - entity: number
+        not_intent: stop
+        type: from_entity
+      - entity: amount-of-money
+        not_intent: stop
+        type: from_entity
+      - intent: inform
+        type: from_text
+    confirm_file_new_claim:
+      - intent: affirm
+        type: from_intent
+        value: yes
+      - intent: deny
+        type: from_intent
+        value: no
+      - intent:
+          - inform
+          - claim_status_form
+        type: from_text

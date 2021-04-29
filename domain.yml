@@ -43,8 +43,11 @@ intents:
       use_entities: true
   - recommend_new_policies:
       use_entities: true
+  - buy_insurance:
+      use_entities: true
 entities:
   - claim_id
+  - coverage
   - quote_insurance_type
   - scroll_status
   - amount-of-money
@@ -55,29 +58,33 @@ entities:
   - phone-number
   - quote_number_persons
   - insurance_provider
-  - firstname
-  - lastname
+  - fullname
   - dob
   - gender
-  - coverage
   - policy_duration
   - annual_income
 
 slots:
   insurance_provider:
-    type: rasa.shared.core.slots.TextSlot
+    type: rasa.shared.core.slots.AnySlot
     auto_fill: false
     influence_conversation: false
-  firstname:
-    type: rasa.shared.core.slots.TextSlot
-    auto_fill: false
+  insurance_policy_type:
+    type: rasa.shared.core.slots.CategoricalSlot
+    initial_value: null
+    auto_fill: true
     influence_conversation: false
-  lastname:
+    values:
+      - life
+      - home
+      - auto
+      - health
+  fullname:
     type: rasa.shared.core.slots.TextSlot
     auto_fill: false
     influence_conversation: false
   dob:
-    type: rasa.shared.core.slots.AnySlot
+    type: rasa.shared.core.slots.TextSlot
     auto_fill: false
     influence_conversation: false
   gender: 
@@ -85,9 +92,13 @@ slots:
     values:
         - Male 
         - Female
+    influence_conversation: true
+  number_of_persons:
+    type: any
+    auto_fill: false
     influence_conversation: false
   coverage:
-    type: float 
+    type: float
     auto_fill: false
     influence_conversation: false
   annual_income:
@@ -95,7 +106,7 @@ slots:
     auto_fill: false
     influence_conversation: false
   policy_duration:
-    type: list 
+    type: any 
     auto_fill: false
     influence_conversation: false
   address_city:
@@ -191,7 +202,7 @@ slots:
   quote_number_persons:
     type: rasa.shared.core.slots.AnySlot
     initial_value: null
-    auto_fill: true
+    auto_fill: false
     influence_conversation: false
   quote_state:
     type: rasa.shared.core.slots.AnySlot
@@ -234,6 +245,62 @@ slots:
     auto_fill: true
     influence_conversation: true
 responses:
+  # buy insurance responses
+  utter_get_best_rates:
+    - text: To get you the best plans, i need to get a few quick details.
+  utter_ask_fullname:
+    - text: Can i have your fullname as displayed on National ID? 
+  utter_ask_insurance_provider:
+    - buttons:
+        - payload: /inform{{"insurance_provider":"Jubilee"}}
+          title: Jubilee
+        - payload: /inform{{"insurance_provider":"Prudential"}}
+          title: Prudential
+        - payload: /inform{{"insurance_provider":"UAP"}}
+          title: UAP
+        - payload: /inform{{"insurance_provider":"ICEA"}}
+          title: ICEA
+        - payload: /inform{{"insurance_provider":"SWICO"}}
+          title: SWICO
+      text: Select an insurance provider
+  utter_ask_insurance_policy_type:
+    - buttons:
+        - payload: /inform{{"insurance_policy_type":"health"}}
+          title: Health
+        - payload: /inform{{"insurance_policy_type":"life"}}
+          title: Life
+        - payload: /inform{{"insurance_policy_type":"auto"}}
+          title: Auto
+        - payload: /inform{{"insurance_policy_type":"home"}}
+          title: Home
+      text: What kind of insurance would you like to buy?
+  utter_ask_dob:
+    - text: How about your date of birth? {in the format dd/mm/yyyy}
+  utter_ask_coverage:
+    - text: |- 
+        And what is the coverage amount your looking for?\n
+        1. $40,000\n
+        2. $70,000\n
+        3. $100,000
+  utter_ask_policy_duration:
+    - text: |-
+        Please choose a policy duration\n
+        1. 3 years\n
+        2. 5 years\n
+        3. 10 years\n 
+  utter_number_of_persons:
+    - text: How many people do you want to include on your policy?
+  utter_ask_annual_income:
+    - text: How much do you earn a year?
+  utter_ask_gender:
+    - buttons: 
+      - payload: /inform{{"gender":"male"}}
+        title: Male
+      - payload: /inform{{"gender":"female"}}
+        title: Female
+      text: How about your gender?
+    
+  # quote insurance responses
   utter_ask_address_street:
     - text: What is your mailing street number and name?
   utter_ask_address_city:
@@ -350,6 +417,22 @@ responses:
         Insurance Type: {insurance_type}
         Policy State: {quote_state}
         Number of people on policy: {n_persons}
+  utter_buy_insurance:
+    - text: |-
+        {first_name}, Based on your details, your premium would be:
+          1. ${final_rate} per month for {policy_duration} if you are to pay monthly
+          2. ${final_rate * 4} for {policy_duration} if you are to pay quarterly
+          3. ${final_rate * 12} for {policy_duration} if you are to pay annually.
+        
+        Policy Details: 
+        Insurance Provider: {insurance_provider}
+        Insurance Policy: {insurance_type}
+        Policy Holder: {policy_holder}
+        Sum assured: {sum_assured}
+        Number of people on policy: {n_persons} 
+
+        Here is the payment link in should you want to go ahead now. https://vidabot.com/buy_insurance_policy/
+
   utter_greet:
     - buttons:
         - payload: /claim_status
@@ -444,6 +527,8 @@ responses:
     - text: I can help you get a new insurance quote. Let's learn a little more about you.
 actions:
   - validate_quote_form
+  - validate_buy_insurance_form
+  - action_buy_insurance
   - action_get_quote
   - action_stop_quote
   - action_claim_status
@@ -492,15 +577,20 @@ forms:
     insurance_provider:
       - entity: insurance_provider
         type: from_entity
-    insurance_type:
+    insurance_policy_type:
       - entity: quote_insurance_type
         type: from_entity
-    firstname:
-      - entity: firstname
+      - not_intent: get_a_quote
+        type: from_text
+    number_of_persons:
+      - entity: quote_number_persons
         type: from_entity
-      - type: from_text
-    lastname:
-      - entity: lastname
+      - not_intent: stop
+        type: from_text
+      - entity: number
+        type: from_entity
+    fullname:
+      - entity: fullname
         type: from_entity
       - type: from_text
     dob:
@@ -510,14 +600,20 @@ forms:
     gender:
       - entity: gender
         type: from_entity
-    coverage:
-      - type: from_text
-      - type: from_entity
-        entity: coverage
     annual_income:
       - type: from_entity
         entity: annual_income
       - type: from_text
+      - not_intent: get_a_quote
+        type: from_text
+    coverage:
+      - entity: coverage
+        type: from_entity
+      - entity: number
+        type: from_entity
+      - type: from_text
+      - not_intent: get_a_quote
+        type: from_text
     policy_duration:
       - entity: policy_duration
         type: from_entity

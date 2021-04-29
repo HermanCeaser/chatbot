@@ -63,3 +63,20 @@ rules:
       - slot_was_set:
           - claim_id: null
       - action: utter_ask_knows_claim_id
+  - rule: Activate Buy Insurance Form 
+    steps: 
+      - intent: buy_insurance
+      - action: utter_get_best_rates
+      - action: buy_insurance_form
+      - active_loop: buy_insurance_form
+
+  - rule: Deactivate Buy Insurance Form 
+    condition:
+      - active_loop: buy_insurance_form
+    steps:
+      - action: buy_insurance_form
+      - active_loop: null
+      - slot_was_set:
+          - requested_slot: null
+      - action: action_buy_insurance
+      - action: utter_anything_else
