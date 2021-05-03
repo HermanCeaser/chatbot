@@ -334,9 +334,6 @@ nlu:
     - who knows
     - i'm uncertain
     - i don't know for sure
-    - [Herman Ceaser](fullname)
-    - [10 years](policy_duration)
-    - [5 years](policy_duration)
 - intent: bot_challenge
   examples: |
     - are you a bot?

@@ -55,8 +55,8 @@ pipeline:
     ambiguity_threshold: 0.1
 policies:
   - name: AugmentedMemoizationPolicy
-    max_history: 3
+    max_history: 5
   - name: TEDPolicy
-    max_history: 3
+    max_history: 8
     epochs: 200
   - name: RulePolicy

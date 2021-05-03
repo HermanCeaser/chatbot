@@ -213,7 +213,7 @@ class ValidateBuyInsuranceForm(FormValidationAction):
         """ unique identifier for the action """
         return "validate_buy_insurance_form"
 
-    def validate_insurance_policy_type(
+    async def validate_insurance_policy_type(
             self,
             value: Text,
             dispatcher: CollectingDispatcher,
@@ -257,7 +257,7 @@ class ValidateBuyInsuranceForm(FormValidationAction):
 
         return {"insurance_provider": insurance_provider}
 
-    def validate_number_of_persons(
+    async def validate_number_of_persons(
             self,
             value: Text,
             dispatcher: CollectingDispatcher,
@@ -272,8 +272,9 @@ class ValidateBuyInsuranceForm(FormValidationAction):
         if tracker.get_intent_of_latest_message() == "get_a_quote":
             return {"number_of_persons": None}
 
+        n_persons = value.split()[0]
         try:
-            int(value)
+            int(n_persons)
         except TypeError:
             dispatcher.utter_message(f"Number of persons must be a number.")
             return {"number_of_persons": None}
@@ -281,12 +282,14 @@ class ValidateBuyInsuranceForm(FormValidationAction):
             dispatcher.utter_message("You must answer with a number.")
             return {"number_of_persons": None}
 
-        if int(value) <= 0:
+        print(f"number of persons: {n_persons}")
+
+        if int(n_persons) <= 0:
             dispatcher.utter_message(
                 "Number of people on policy must be >= 1.")
             return {"number_of_persons": None}
 
-        return {"quote_number_persons": value}
+        return {"quote_number_persons": n_persons}
 
     async def validate_fullname(
             self,
@@ -305,7 +308,7 @@ class ValidateBuyInsuranceForm(FormValidationAction):
             dispatcher.utter_message("Name cannot be empty")
             return {"fullname": None}
 
-        return {"insurance_provider": fullname}
+        return {"fullname": fullname}
 
     async def validate_dob(self, value: Text, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any],) -> Dict[Text, Any]:
         """Validates value of 'dob' slot"""
@@ -337,6 +340,8 @@ class ValidateBuyInsuranceForm(FormValidationAction):
 
         if tracker.get_intent_of_latest_message() == "get_a_quote":
             return {"coverage": None}
+
+        print(f"coverage {value}")
         try:
             float(value)
         except TypeError:
@@ -353,16 +358,16 @@ class ValidateBuyInsuranceForm(FormValidationAction):
 
         return {"coverage": value}
 
-    def validate_gender(self, value: Text, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any],) -> Dict[Text, Any]:
+    async def validate_gender(self, value: Text, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any],) -> Dict[Text, Any]:
         """Validates the 'gender' slot value"""
         if value.lower() not in ["male", "female"]:
             dispatcher.utter_message("Must Select a valid gender type")
             return {"gender": None}
         return {"gender": value}
 
-    def validate_policy_duration(self, value: Text, dispatcher: CollectingDispatcher, tracker: Tracker, domain):
+    async def validate_policy_duration(self, value: Text, dispatcher: CollectingDispatcher, tracker: Tracker, domain):
         """Validates the number of years of Policy duration."""
-        if tracker.get_intent_of_latest_message() == "stop":
+        if tracker.get_intent_of_latest_message() == "get_a_quote":
             return {"policy_duration": None}
 
         duration = tracker.get_slot('policy_duration')
@@ -371,6 +376,8 @@ class ValidateBuyInsuranceForm(FormValidationAction):
             return {"policy_duration": None}
 
         duration = duration.split()[0]
+        print(f"policy duraion: ({value}, {duration})")
+
         try:
             int(duration)
         except TypeError:
@@ -380,14 +387,14 @@ class ValidateBuyInsuranceForm(FormValidationAction):
             dispatcher.utter_message("You must answer with a number of years.")
             return {"policy_duration": None}
 
-        if duration not in [3, 5, 10]:
+        if int(duration) not in [3, 5, 10]:
             dispatcher.utter_message(
                 "policy_duration  must be  either  3, 5, or 10 years. Try again")
             return {"policy_duration": None}
 
         return {"policy_duration": duration}
 
-    def validate_annual_income(
+    async def validate_annual_income(
             self,
             value: Text,
             dispatcher: CollectingDispatcher,
@@ -397,6 +404,8 @@ class ValidateBuyInsuranceForm(FormValidationAction):
         """Validates whether the annual income entered is valid."""
         if tracker.get_intent_of_latest_message() == "get_a_quote":
             return {"annual_income": None}
+
+        print(f"annual income: {value}")
         try:
             float(value)
         except TypeError:
@@ -448,7 +457,9 @@ class ActionBuyInsurance(Action):
 
             msg_params = {
                 "final_rate": final_rate,
-                "first_name": policy_holder.split()[0],
+                "final_rate_quarterly": final_rate * 4,
+                "final_rate_annually": final_rate * 12,
+                "first_name": policy_holder.split()[0].capitalize(),
                 "insurance_type": policy.capitalize(),
                 "insurance_provider": insurance_provider.capitalize(),
                 "policy_holder": policy_holder,
