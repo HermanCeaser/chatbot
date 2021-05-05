@@ -272,7 +272,13 @@ class ValidateBuyInsuranceForm(FormValidationAction):
         if tracker.get_intent_of_latest_message() == "get_a_quote":
             return {"number_of_persons": None}
 
-        n_persons = value.split()[0]
+        n_persons = tracker.get_slot("number_of_persons")
+
+        if isinstance(n_persons, list):
+            n_persons = n_persons[0].split()[0]
+        else:
+            n_persons = n_persons.split()[0]
+
         try:
             int(n_persons)
         except TypeError:
@@ -375,7 +381,9 @@ class ValidateBuyInsuranceForm(FormValidationAction):
             dispatcher.utter_message(f"Policy duration needs to be a number.")
             return {"policy_duration": None}
 
-        duration = duration.split()[0]
+        if isinstance(duration, str):
+            duration = duration.split()[0]
+
         print(f"policy duraion: ({value}, {duration})")
 
         try:

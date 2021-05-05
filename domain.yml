@@ -431,7 +431,8 @@ responses:
         Sum assured: ${sum_assured}
         Number of people on policy: {n_persons} 
 
-        Here is the payment link in should you want to go ahead now. https://vidabot.com/buy_insurance_policy/
+        Here is the payment link should you want to go ahead now. https://vidabot.com/buy_insurance_policy/
+
 
   utter_greet:
     - buttons:
