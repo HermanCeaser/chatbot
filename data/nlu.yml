@@ -205,17 +205,16 @@ nlu:
     - Little Falls
     - 7 Maple Ln
     - Queensbury
-    - [02/05/2004](dob)[02/05/2004](dob)
+    - [02/05/2004](dob)
     - 50000
     - 5
     - 10 years
     - 3 years
     - 40000
     - 20000
-    - [05/02/2005](dob)[05/02/2005](dob)
-    - [5/02/2005](dob)
+    - [05/02/2005](dob)
     - [Carlifornia](state)
-    - [15/02/2002](dob)[15/02/2002](dob)
+    - [15/02/2002](dob)
     - 5 years
     - Herman Ceaser
 - intent: get_a_quote
