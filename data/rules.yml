@@ -4,6 +4,24 @@ rules:
     steps:
       - intent: greet
       - action: utter_greet
+  - rule: Start a conversation on the very first time user talk to the bot.
+    steps:
+      - intent: start
+      - action: utter_start
+      - action: utter_confirm
+      - action: get_firstname
+      - active_loop: get_firstname
+
+  - rule: Deactivate loop from get firstname form
+    condition:
+      - active_loop: get_firstname
+    steps:
+      - action: get_firstname
+      - active_loop: null
+      - slot_was_set:
+          - requested_slot: null
+      - action: action_get_firstname
+
   - rule: Recommend new policy everytime a user asks for recommendation
     steps:
       - intent: recommend_new_policies
@@ -63,14 +81,14 @@ rules:
       - slot_was_set:
           - claim_id: null
       - action: utter_ask_knows_claim_id
-  - rule: Activate Buy Insurance Form 
-    steps: 
+  - rule: Activate Buy Insurance Form
+    steps:
       - intent: buy_insurance
       - action: utter_get_best_rates
       - action: buy_insurance_form
       - active_loop: buy_insurance_form
 
-  - rule: Deactivate Buy Insurance Form 
+  - rule: Deactivate Buy Insurance Form
     condition:
       - active_loop: buy_insurance_form
     steps:

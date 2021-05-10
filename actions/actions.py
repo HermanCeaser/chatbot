@@ -31,6 +31,7 @@ import logging
 from rasa_sdk.interfaces import Action
 from rasa_sdk.events import (
     SlotSet,
+    AllSlotsReset,
     EventType,
     ActionExecuted,
     SessionStarted,
@@ -57,6 +58,40 @@ US_STATES = ["AZ", "AL", "AK", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "
 
 
 # Get New Quote Actions
+class ValidateGetFirstname(FormValidationAction):
+
+    def name(self):
+        return "validate_get_firstname"
+
+    def validate_firstname(self, value: Text, dispatcher: CollectingDispatcher, tracker: Tracker,  domain: Dict[Text, Any]):
+        if tracker.get_intent_of_latest_message() == "buy_insurance":
+            return {"firstname": None}
+
+        firstname = tracker.get_slot("firstname")
+
+        if isinstance(firstname, str):
+            firstname = firstname.split()[0]
+        else:
+            dispatcher.utter_message("First name should be a string")
+            return {"firstname": None}
+        return {"firstname": firstname}
+
+
+class ActionGetFirstname(Action):
+    def name(self):
+        return "action_get_firstname"
+
+    async def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]):
+        slots = ["firstname"]
+
+        firstname = tracker.get_slot("firstname")
+
+        if firstname is not None:
+            dispatcher.utter_message(
+                response="utter_greet", firstname=firstname)
+
+        return [SlotSet(slot, None) for slot in slots]
+
 
 class ActionGetQuote(Action):
     """Gets an insurance quote"""
@@ -481,7 +516,7 @@ class ActionBuyInsurance(Action):
             dispatcher.utter_message(
                 "The selected Insurance policy is not provided by the provider")
 
-        return [SlotSet(slot, None) for slot in slots]
+        return AllSlotsReset()
 
 
 # Change Address Actions
