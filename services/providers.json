@@ -1,0 +1,18 @@
+{
+  "providers": [
+    {
+      "provider_name": "Jubilee",
+      "available_policies": [
+        {
+          "name": "Motor Third Party",
+          "policy_description": "Covers another person involved in an accident.",
+          "code": "JAM01",
+          "created": "2021-05-19T12:36:23.023535Z"
+        }
+      ]
+    },
+    { "provider_name": "Prudential", "available_policies": [] },
+    { "provider_name": "ICEA", "available_policies": [] },
+    { "provider_name": "SWICO", "available_policies": [] }
+  ]
+}
