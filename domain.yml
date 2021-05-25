@@ -82,15 +82,11 @@ slots:
     auto_fill: false
     influence_conversation: false
   insurance_policy_type:
-    type: rasa.shared.core.slots.CategoricalSlot
+    type: any
     initial_value: null
-    auto_fill: true
+    auto_fill: false
     influence_conversation: false
-    values:
-      - life
-      - home
-      - auto
-      - health
+  
   fullname:
     type: rasa.shared.core.slots.TextSlot
     auto_fill: false
@@ -284,18 +280,18 @@ responses:
         - payload: /inform{{"insurance_provider":"SWICO"}}
           title: SWICO
       text: Select an insurance provider
-  utter_ask_insurance_policy_type:
-    - buttons:
-        - payload: /inform{{"quote_insurance_type":"health"}}
-          title: Health
-        - payload: /inform{{"quote_insurance_type":"life"}}
-          title: Life
-        - payload: /inform{{"quote_insurance_type":"auto"}}
-          title: Auto
-        - payload: /inform{{"quote_insurance_type":"home"}}
-          title: Home
-      text: What kind of insurance would you like to buy?
-      button_type: vertical
+  # utter_ask_insurance_policy_type:
+  #   - buttons:
+  #       - payload: /inform{{"quote_insurance_type":"health"}}
+  #         title: Health
+  #       - payload: /inform{{"quote_insurance_type":"life"}}
+  #         title: Life
+  #       - payload: /inform{{"quote_insurance_type":"auto"}}
+  #         title: Auto
+  #       - payload: /inform{{"quote_insurance_type":"home"}}
+  #         title: Home
+  #     text: What kind of insurance would you like to buy?
+  #     button_type: vertical
   utter_ask_dob:
     - text: How about your date of birth? {in the format dd/mm/yyyy}
   utter_ask_coverage:

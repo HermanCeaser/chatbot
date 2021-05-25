@@ -84,6 +84,12 @@ async def main():
             getInsuranceCategories(session, url)
         )
 
+
+def list_categories(response):
+    return [category_name['name'].lower() for category_name in response['categories']]
+
+    
+
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main())
 end_time = time.time()-start_time

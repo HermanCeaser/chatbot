@@ -45,17 +45,35 @@ from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.forms import FormValidationAction
 from rasa_sdk.types import DomainDict
 
+from services.api import list_categories
+
 
 logger = logging.getLogger(__name__)
 
 MOCK_DATA = json.load(open("actions/mock_data.json", "r"))
 NEW_POLICIES = json.load(open("actions/new_policies.json", "r"))
 DOB_PATTERN = "^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}$"
+policy_categories = json.load(open("services/categories.json", "r"))
 
 US_STATES = ["AZ", "AL", "AK", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY",
              "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH",
              "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
 
+
+# Use custom action to ask for insurance Policies
+class AskForPolicyType(Action):
+    def name(self) -> Text:
+        return "action_ask_insurance_policy_type"
+
+    def run(self, dispatcher, tracker: Tracker, domain: "DomainDict") -> List[Dict[Text, Any]]:
+        buttons = []
+        for policy in list_categories(policy_categories):
+            title = f"{policy}"
+            payload = f'/inform{{"quote_insurance_type":"{policy}"}}'
+            buttons.append({title: title, payload: payload})
+
+        dispatcher.utter_message(text="What kind of insurance would you like to buy?", buttons= buttons, button_type='vertical')
+        return []
 
 # Get New Quote Actions
 class ValidateGetFirstname(FormValidationAction):
@@ -135,6 +153,8 @@ class ValidateQuoteForm(FormValidationAction):
     def name(self) -> Text:
         """Unique identifier for the action."""
         return "validate_quote_form"
+
+               
 
     def validate_AA_quote_insurance_type(
             self,
@@ -268,9 +288,9 @@ class ValidateBuyInsuranceForm(FormValidationAction):
 
         print(value, insurance_policy_type)
 
-        if insurance_policy_type.lower() not in ["auto", "health", "life", "home"]:
+        if insurance_policy_type.lower() not in list_categories(policy_categories):
             dispatcher.utter_message(
-                "Must select a valid type of insurance type")
+                "Must select a valid insurance type")
             return {"insurance_policy_type": None}
 
         return {"insurance_policy_type": insurance_policy_type}
