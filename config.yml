@@ -31,9 +31,8 @@ language: en
 pipeline: 
   - name: WhitespaceTokenizer
   - name: RegexFeaturizer
-  - name: CRFEntityExtractor
+  # - name: CRFEntityExtractor
   - name: LexicalSyntacticFeaturizer
-  - name: EntitySynonymMapper
   - name: CountVectorsFeaturizer
     analyzer: char_wb
     min_ngram: 1
@@ -53,6 +52,7 @@ pipeline:
   - name: FallbackClassifier
     threshold: 0.7
     ambiguity_threshold: 0.1
+  - name: EntitySynonymMapper
 policies:
   - name: AugmentedMemoizationPolicy
     max_history: 5

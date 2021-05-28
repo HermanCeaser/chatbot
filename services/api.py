@@ -85,9 +85,6 @@ async def main():
         )
 
 
-def list_categories(response):
-    return [category_name['name'].lower() for category_name in response['categories']]
-
     
 
 loop = asyncio.get_event_loop()

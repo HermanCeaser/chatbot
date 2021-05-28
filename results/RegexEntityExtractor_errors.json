@@ -1,0 +1,905 @@
+[
+  {
+    "text": "i need to renew my life insurance policy right now.",
+    "entities": [
+      {
+        "start": 19,
+        "end": 23,
+        "value": "life",
+        "entity": "quote_insurance_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "quote_insurance_type",
+        "start": 19,
+        "end": 23,
+        "confidence_entity": 0.999299168586731,
+        "value": "life",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "i want to renew my car insurance policy",
+    "entities": [
+      {
+        "start": 19,
+        "end": 22,
+        "value": "auto",
+        "entity": "quote_insurance_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "quote_insurance_type",
+        "start": 19,
+        "end": 22,
+        "confidence_entity": 0.9994303584098816,
+        "value": "auto",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "what do i need to renew my health insurance",
+    "entities": [
+      {
+        "start": 27,
+        "end": 33,
+        "value": "health",
+        "entity": "quote_insurance_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "quote_insurance_type",
+        "start": 27,
+        "end": 33,
+        "confidence_entity": 0.9984070658683777,
+        "value": "health",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "where is Jubilee located?",
+    "entities": [
+      {
+        "start": 9,
+        "end": 16,
+        "value": "Jubilee",
+        "entity": "insurance_provider"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "insurance_provider",
+        "start": 9,
+        "end": 16,
+        "confidence_entity": 0.9742873311042786,
+        "value": "Jubilee",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "i need to buy a policy for my car from Jubilee",
+    "entities": [
+      {
+        "start": 30,
+        "end": 33,
+        "value": "auto",
+        "entity": "quote_insurance_type"
+      },
+      {
+        "start": 39,
+        "end": 46,
+        "value": "Jubilee",
+        "entity": "insurance_provider"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "quote_insurance_type",
+        "start": 30,
+        "end": 33,
+        "confidence_entity": 0.9991063475608826,
+        "value": "auto",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "insurance_provider",
+        "start": 39,
+        "end": 46,
+        "confidence_entity": 0.9843706488609314,
+        "value": "Jubilee",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "i need to buy a life insurance policy from Prudential",
+    "entities": [
+      {
+        "start": 16,
+        "end": 20,
+        "value": "life",
+        "entity": "quote_insurance_type"
+      },
+      {
+        "start": 43,
+        "end": 53,
+        "value": "Prudential",
+        "entity": "insurance_provider"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "quote_insurance_type",
+        "start": 16,
+        "end": 20,
+        "confidence_entity": 0.999363362789154,
+        "value": "life",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "insurance_provider",
+        "start": 43,
+        "end": 53,
+        "confidence_entity": 0.9885784387588501,
+        "value": "Prudential",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "i need to buy a life insurance policy for 2 people",
+    "entities": [
+      {
+        "start": 16,
+        "end": 20,
+        "value": "life",
+        "entity": "quote_insurance_type"
+      },
+      {
+        "start": 42,
+        "end": 43,
+        "value": "2",
+        "entity": "quote_number_persons"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "quote_insurance_type",
+        "start": 16,
+        "end": 20,
+        "confidence_entity": 0.9993836879730225,
+        "value": "life",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "quote_number_persons",
+        "start": 42,
+        "end": 43,
+        "confidence_entity": 0.9932278990745544,
+        "value": "2",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "i crashed my car",
+    "entities": [
+      {
+        "start": 13,
+        "end": 16,
+        "value": "auto",
+        "entity": "quote_insurance_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "quote_insurance_type",
+        "start": 13,
+        "end": 16,
+        "confidence_entity": 0.9984734654426575,
+        "value": "auto",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "file a health insurance claim",
+    "entities": [
+      {
+        "start": 7,
+        "end": 13,
+        "value": "health",
+        "entity": "quote_insurance_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "quote_insurance_type",
+        "start": 7,
+        "end": 13,
+        "confidence_entity": 0.996955156326294,
+        "value": "health",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "file health insurance claim",
+    "entities": [
+      {
+        "start": 5,
+        "end": 11,
+        "value": "health",
+        "entity": "quote_insurance_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "quote_insurance_type",
+        "start": 5,
+        "end": 11,
+        "confidence_entity": 0.9950886368751526,
+        "value": "health",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "a tree fell on my house",
+    "entities": [
+      {
+        "start": 18,
+        "end": 23,
+        "value": "house",
+        "entity": "quote_insurance_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "quote_insurance_type",
+        "start": 18,
+        "end": 23,
+        "confidence_entity": 0.9993662238121033,
+        "value": "house",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "file a life insurance claim",
+    "entities": [
+      {
+        "start": 7,
+        "end": 11,
+        "value": "life",
+        "entity": "quote_insurance_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "quote_insurance_type",
+        "start": 7,
+        "end": 11,
+        "confidence_entity": 0.9972694516181946,
+        "value": "life",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "i was in a car crash",
+    "entities": [
+      {
+        "start": 11,
+        "end": 14,
+        "value": "auto",
+        "entity": "quote_insurance_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "quote_insurance_type",
+        "start": 11,
+        "end": 14,
+        "confidence_entity": 0.9992244243621826,
+        "value": "auto",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "pay a claim",
+    "entities": [
+      {
+        "start": 6,
+        "end": 11,
+        "value": "claim",
+        "entity": "payment_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "payment_type",
+        "start": 6,
+        "end": 11,
+        "confidence_entity": 0.9833301901817322,
+        "value": "claim",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "pay off a claim",
+    "entities": [
+      {
+        "start": 10,
+        "end": 15,
+        "value": "claim",
+        "entity": "payment_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "payment_type",
+        "start": 10,
+        "end": 15,
+        "confidence_entity": 0.9781339764595032,
+        "value": "claim",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "pay claim",
+    "entities": [
+      {
+        "start": 4,
+        "end": 9,
+        "value": "claim",
+        "entity": "payment_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "payment_type",
+        "start": 4,
+        "end": 9,
+        "confidence_entity": 0.986247181892395,
+        "value": "claim",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "i want to pay a claim",
+    "entities": [
+      {
+        "start": 16,
+        "end": 21,
+        "value": "claim",
+        "entity": "payment_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "payment_type",
+        "start": 16,
+        "end": 21,
+        "confidence_entity": 0.9051366448402405,
+        "value": "claim",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "make a claim payment",
+    "entities": [
+      {
+        "start": 7,
+        "end": 12,
+        "value": "claim",
+        "entity": "payment_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "payment_type",
+        "start": 7,
+        "end": 12,
+        "confidence_entity": 0.9531304836273193,
+        "value": "claim",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "NY",
+    "entities": [
+      {
+        "start": 0,
+        "end": 2,
+        "value": "NY",
+        "entity": "state"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "state",
+        "start": 0,
+        "end": 2,
+        "confidence_entity": 0.9916468858718872,
+        "value": "NY",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "NM",
+    "entities": [
+      {
+        "start": 0,
+        "end": 2,
+        "value": "NM",
+        "entity": "state"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "state",
+        "start": 0,
+        "end": 2,
+        "confidence_entity": 0.9948624968528748,
+        "value": "NM",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "wyoming",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "state",
+        "start": 0,
+        "end": 7,
+        "value": "WY",
+        "extractor": "RegexEntityExtractor",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "12054",
+    "entities": [
+      {
+        "start": 0,
+        "end": 5,
+        "value": "12054",
+        "entity": "claim_id"
+      }
+    ],
+    "predicted_entities": []
+  },
+  {
+    "text": "MA",
+    "entities": [
+      {
+        "start": 0,
+        "end": 2,
+        "value": "MA",
+        "entity": "state"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "state",
+        "start": 0,
+        "end": 2,
+        "confidence_entity": 0.9959136843681335,
+        "value": "MA",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "AZ",
+    "entities": [
+      {
+        "start": 0,
+        "end": 2,
+        "value": "AZ",
+        "entity": "state"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "state",
+        "start": 0,
+        "end": 2,
+        "confidence_entity": 0.9928336143493652,
+        "value": "AZ",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "Carlifornia",
+    "entities": [
+      {
+        "start": 0,
+        "end": 11,
+        "value": "Carlifornia",
+        "entity": "state"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "state",
+        "start": 0,
+        "end": 11,
+        "confidence_entity": 0.9982787370681763,
+        "value": "Carlifornia",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "10/2017/12",
+    "entities": [
+      {
+        "start": 0,
+        "end": 10,
+        "value": "10/2017/12",
+        "entity": "dob"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "dob",
+        "start": 0,
+        "end": 10,
+        "confidence_entity": 0.9992533326148987,
+        "value": "10/2017/12",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "get me a quote of life",
+    "entities": [
+      {
+        "start": 18,
+        "end": 22,
+        "value": "life",
+        "entity": "quote_insurance_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "quote_insurance_type",
+        "start": 18,
+        "end": 22,
+        "confidence_entity": 0.9981799125671387,
+        "value": "life",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "i need health insurance",
+    "entities": [
+      {
+        "start": 7,
+        "end": 13,
+        "value": "health",
+        "entity": "quote_insurance_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "quote_insurance_type",
+        "start": 7,
+        "end": 13,
+        "confidence_entity": 0.9983055591583252,
+        "value": "health",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "i need a quote for car insurance",
+    "entities": [
+      {
+        "start": 19,
+        "end": 22,
+        "value": "car",
+        "entity": "quote_insurance_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "quote_insurance_type",
+        "start": 19,
+        "end": 22,
+        "confidence_entity": 0.9994223117828369,
+        "value": "auto",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "how much will healthcare insurance cost?",
+    "entities": [
+      {
+        "start": 14,
+        "end": 24,
+        "value": "healthcare",
+        "entity": "quote_insurance_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "quote_insurance_type",
+        "start": 14,
+        "end": 24,
+        "confidence_entity": 0.9993707537651062,
+        "value": "health",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "can i get a quote for 3 people on healthcare insurance",
+    "entities": [
+      {
+        "start": 22,
+        "end": 23,
+        "value": "3",
+        "entity": "quote_number_persons"
+      },
+      {
+        "start": 34,
+        "end": 44,
+        "value": "healthcare",
+        "entity": "quote_insurance_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "quote_number_persons",
+        "start": 22,
+        "end": 23,
+        "confidence_entity": 0.992302417755127,
+        "value": "3",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "quote_insurance_type",
+        "start": 34,
+        "end": 44,
+        "confidence_entity": 0.99920254945755,
+        "value": "health",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "how much will health insurance for 2 in New york cost?",
+    "entities": [
+      {
+        "start": 14,
+        "end": 20,
+        "value": "health",
+        "entity": "quote_insurance_type"
+      },
+      {
+        "start": 35,
+        "end": 36,
+        "value": "2",
+        "entity": "quote_number_persons"
+      },
+      {
+        "start": 40,
+        "end": 48,
+        "value": "New york",
+        "entity": "state"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "state",
+        "start": 40,
+        "end": 48,
+        "value": "NY",
+        "extractor": "RegexEntityExtractor",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      },
+      {
+        "entity": "quote_insurance_type",
+        "start": 14,
+        "end": 20,
+        "confidence_entity": 0.9989230036735535,
+        "value": "health",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "quote_number_persons",
+        "start": 35,
+        "end": 36,
+        "confidence_entity": 0.9946882724761963,
+        "value": "2",
+        "extractor": "DIETClassifier"
+      },
+      {
+        "entity": "state",
+        "start": 40,
+        "end": 48,
+        "confidence_entity": 0.9321303963661194,
+        "value": "NY",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "can you give me a quote for life insurance?",
+    "entities": [
+      {
+        "start": 28,
+        "end": 32,
+        "value": "life",
+        "entity": "quote_insurance_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "quote_insurance_type",
+        "start": 28,
+        "end": 32,
+        "confidence_entity": 0.9991515874862671,
+        "value": "life",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "give me a health insurance quote",
+    "entities": [
+      {
+        "start": 10,
+        "end": 16,
+        "value": "health",
+        "entity": "quote_insurance_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "quote_insurance_type",
+        "start": 10,
+        "end": 16,
+        "confidence_entity": 0.9986724853515625,
+        "value": "health",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "i'm in the market to get life insurance",
+    "entities": [
+      {
+        "start": 25,
+        "end": 29,
+        "value": "life",
+        "entity": "quote_insurance_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "quote_insurance_type",
+        "start": 25,
+        "end": 29,
+        "confidence_entity": 0.9991053938865662,
+        "value": "life",
+        "extractor": "DIETClassifier"
+      }
+    ]
+  },
+  {
+    "text": "i need car insurance",
+    "entities": [
+      {
+        "start": 7,
+        "end": 10,
+        "value": "auto",
+        "entity": "quote_insurance_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "quote_insurance_type",
+        "start": 7,
+        "end": 10,
+        "confidence_entity": 0.9990940093994141,
+        "value": "auto",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "i need to insure my car",
+    "entities": [
+      {
+        "start": 20,
+        "end": 23,
+        "value": "auto",
+        "entity": "quote_insurance_type"
+      }
+    ],
+    "predicted_entities": [
+      {
+        "entity": "quote_insurance_type",
+        "start": 20,
+        "end": 23,
+        "confidence_entity": 0.9989506006240845,
+        "value": "auto",
+        "extractor": "DIETClassifier",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "how is the weather in New York",
+    "entities": [],
+    "predicted_entities": [
+      {
+        "entity": "state",
+        "start": 22,
+        "end": 30,
+        "value": "NY",
+        "extractor": "RegexEntityExtractor",
+        "processors": [
+          "EntitySynonymMapper"
+        ]
+      }
+    ]
+  }
+]

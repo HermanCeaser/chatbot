@@ -1,0 +1,69 @@
+{
+  "claim_id": {
+    "precision": 1.0,
+    "recall": 0.9230769230769231,
+    "f1-score": 0.9600000000000001,
+    "support": 13,
+    "confused_with": {}
+  },
+  "state": {
+    "precision": 0.9090909090909091,
+    "recall": 0.8571428571428571,
+    "f1-score": 0.8823529411764706,
+    "support": 35,
+    "confused_with": {}
+  },
+  "insurance_provider": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 3,
+    "confused_with": {}
+  },
+  "dob": {
+    "precision": 1.0,
+    "recall": 0.8888888888888888,
+    "f1-score": 0.9411764705882353,
+    "support": 9,
+    "confused_with": {}
+  },
+  "payment_type": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 5,
+    "confused_with": {}
+  },
+  "quote_number_persons": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 3,
+    "confused_with": {}
+  },
+  "quote_insurance_type": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 23,
+    "confused_with": {}
+  },
+  "micro avg": {
+    "precision": 0.9433962264150944,
+    "recall": 0.5494505494505495,
+    "f1-score": 0.6944444444444444,
+    "support": 91
+  },
+  "macro avg": {
+    "precision": 0.4155844155844156,
+    "recall": 0.3813012384440956,
+    "f1-score": 0.39764705882352935,
+    "support": 91
+  },
+  "weighted avg": {
+    "precision": 0.5914085914085914,
+    "recall": 0.5494505494505495,
+    "f1-score": 0.5695927601809955,
+    "support": 91
+  }
+}

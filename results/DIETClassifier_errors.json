@@ -1,0 +1,14 @@
+[
+  {
+    "text": "12054",
+    "entities": [
+      {
+        "start": 0,
+        "end": 5,
+        "value": "12054",
+        "entity": "claim_id"
+      }
+    ],
+    "predicted_entities": []
+  }
+]

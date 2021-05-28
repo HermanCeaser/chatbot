@@ -31,12 +31,13 @@ nlu:
     - i would like to buy an insurance policy
     - i need to get a new policy
     - i want an insurance policy
-    - i need a [life](quote_insurance_type) insurance policy for 2 people
+    - i need to buy a policy for my [car]{"entity": "quote_insurance_type", "value": "auto"} from [Jubilee](insurance_provider)
+    - i need to buy a [life](quote_insurance_type) insurance policy from [Prudential](insurance_provider)
     - buy insurance
     - get insurance policy
     - i need a policy
     - get a policy
-    - i need to buy a [life](quote_insurance_type)[life](quote_insurance_type) insurance policy for [2](quote_number_persons) people
+    - i need to buy a [life](quote_insurance_type) insurance policy for [2](quote_number_persons) people
 - intent: new_id_card
   examples: |
     - i lost my id card
@@ -80,12 +81,12 @@ nlu:
     - check claim id 748536
     - check the status of claim [NC239062](claim_id)
     - has my claim been submitted?
-    - what is the status of claim [XX123456](claim_id)[XX123456](claim_id)
+    - what is the status of claim [XX123456](claim_id)
     - check up on a claim
     - what is the status of claim [XX123456](claim_id)
-    - what is the status of claim [NC709186](claim_id)[NC709186](claim_id)?
+    - what is the status of claim [NC709186](claim_id)
     - what is the status of my recent claim?
-    - check the status of claim [NC339723](claim_id)[NC339723](claim_id)
+    - check the status of claim [NC339723](claim_id)
     - check status of my claim
     - check on my claim status
 - intent: file_a_claim
@@ -209,7 +210,7 @@ nlu:
     - 221233
     - 211233
     - my whole family
-    - [Maryland]{"entity": "state", "value": "MD"}[Maryland]{"entity": "state", "value": "MD"}
+    - [Maryland]{"entity": "state", "value": "MD"}
     - myself
     - just me
     - 30
@@ -219,7 +220,6 @@ nlu:
     - 123 Main Ave
     - 123 Main Ave.
     - Cincinnati
-    - [Maryland]{"entity": "state", "value": "MD"}
     - 5000
     - 7 Chestnut St
     - [Vermont]{"entity": "state", "value": "VT"}
@@ -244,20 +244,21 @@ nlu:
     - 5 years
     - Herman Ceaser
     - ceaser
-    - [California]{"entity": "state", "value": "CA"}[California](state)[California](state)
+    - [California]{"entity": "state", "value": "CA"}
     - 30000
-    - [10/03/1997](dob)[10/03/1997](dob)[10/03/1997](dob)
+    - [10/03/1997](dob)
     - [10/2017/12](dob)
     - 9
     - 8
     - 7
     - herman
     - $500
-    - [10/12/2005](dob)[10/12/2005](dob)
+    - [10/12/2005](dob)
     - Mbabazi Doreen
 - intent: get_a_quote
   examples: |
     - i need insurance
+    - get me a quote of [life](quote_insurance_type) 
     - i need [health](quote_insurance_type) insurance
     - i need a quote
     - i need a quote for [car](quote_insurance_type) insurance
@@ -407,7 +408,6 @@ nlu:
     - what is the weather?
     - how is the weather in New York
     - what's for dinner?
-    - tell me about insurance?
     - what's my coverage?
     - what am i covered for?
 - intent: nlu_fallback

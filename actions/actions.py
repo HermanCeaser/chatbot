@@ -1,5 +1,3 @@
-
-
 # This is a simple example for a custom action which utters "Hello World!"
 
 # from typing import Any, Text, Dict, List
@@ -38,14 +36,14 @@ from rasa_sdk.events import (
     Restarted,
     FollowupAction,
     UserUtteranceReverted,
-    ActionExecutionRejected
+    ActionExecutionRejected,
 )
 from rasa_sdk import Tracker
 from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.forms import FormValidationAction
 from rasa_sdk.types import DomainDict
 
-from services.api import list_categories
+from services.utils import list_categories, list_providers
 
 
 logger = logging.getLogger(__name__)
@@ -55,33 +53,148 @@ NEW_POLICIES = json.load(open("actions/new_policies.json", "r"))
 DOB_PATTERN = "^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}$"
 policy_categories = json.load(open("services/categories.json", "r"))
 
-US_STATES = ["AZ", "AL", "AK", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY",
-             "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH",
-             "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
+US_STATES = [
+    "AZ",
+    "AL",
+    "AK",
+    "AR",
+    "CA",
+    "CO",
+    "CT",
+    "DE",
+    "DC",
+    "FL",
+    "GA",
+    "HI",
+    "ID",
+    "IL",
+    "IN",
+    "IA",
+    "KS",
+    "KY",
+    "LA",
+    "ME",
+    "MD",
+    "MA",
+    "MI",
+    "MN",
+    "MS",
+    "MO",
+    "MT",
+    "NE",
+    "NV",
+    "NH",
+    "NJ",
+    "NM",
+    "NY",
+    "NC",
+    "ND",
+    "OH",
+    "OK",
+    "OR",
+    "PA",
+    "RI",
+    "SC",
+    "SD",
+    "TN",
+    "TX",
+    "UT",
+    "VT",
+    "VA",
+    "WA",
+    "WV",
+    "WI",
+    "WY",
+]
 
 
 # Use custom action to ask for insurance Policies
 class AskForPolicyType(Action):
+    """Asks user for insurance policy type they would love to buy"""
+
     def name(self) -> Text:
         return "action_ask_insurance_policy_type"
 
-    def run(self, dispatcher, tracker: Tracker, domain: "DomainDict") -> List[Dict[Text, Any]]:
+    def run(
+        self, dispatcher, tracker: Tracker, domain: "DomainDict"
+    ) -> List[Dict[Text, Any]]:
         buttons = []
-        for policy in list_categories(policy_categories):
-            title = f"{policy}"
-            payload = f'/inform{{"quote_insurance_type":"{policy}"}}'
-            buttons.append({title: title, payload: payload})
+        # Build buttons payload from list of policy categories
+        for policy in list_categories():
+            title = policy.capitalize()
+            payload = f'/inform{{"quote_insurance_type":"{policy.lower()}"}}'
+            buttons.append({"title": title, "payload": payload})
 
-        dispatcher.utter_message(text="What kind of insurance would you like to buy?", buttons= buttons, button_type='vertical')
+        dispatcher.utter_message(
+            "What kind of insurance would you like to buy?",
+            buttons=buttons,
+            button_type="vertical",
+        )
         return []
+
+
+# Ask Insurance Provider
+class AskForInsuranceProvider(Action):
+    """Asks user for the insurance provider they would love to purchase the policy from"""
+
+    def name(self) -> Text:
+        return "action_ask_insurance_provider"
+
+    def run(
+        self, dispatcher, tracker: Tracker, domain: "DomainDict"
+    ) -> List[Dict[Text, Any]]:
+        buttons = []
+
+        for provider in list_providers():
+            title = provider
+            payload = f'/inform{{"insurance_provider":"{provider.lower()}"}}'
+            buttons.append({"title": title, "payload": payload})
+
+        dispatcher.utter_message(
+            text="Which insurance provider would you prefer",
+            buttons=buttons,
+            button_type="vertical",
+        )
+        return []
+
+
+# Ask AA_quote_insurance_type when filling quote form
+class AskQuoteInsuranceType(Action):
+    """Asks user for insurance policy type they want to get a quote for"""
+
+    def name(self):
+        return "action_ask_AA_quote_insurance_type"
+
+    def run(
+        self, dispatcher, tracker: Tracker, domain: "DomainDict"
+    ) -> List[Dict[Text, Any]]:
+        buttons = []
+        for policy in list_categories():
+            title = policy.capitalize()
+            payload = f'/inform{{"quote_insurance_type":"{policy.lower()}"}}'
+            buttons.append({"title": title, "payload": payload})
+
+        dispatcher.utter_message(
+            text="What kind of insurance are you interested in?",
+            buttons=buttons,
+            button_type="vertical",
+        )
+
+        return []
+
 
 # Get New Quote Actions
 class ValidateGetFirstname(FormValidationAction):
-
     def name(self):
         return "validate_get_firstname"
 
-    def validate_firstname(self, value: Text, dispatcher: CollectingDispatcher, tracker: Tracker,  domain: Dict[Text, Any]):
+    def validate_firstname(
+        self,
+        value: Text,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ):
         if tracker.get_intent_of_latest_message() == "buy_insurance":
             return {"firstname": None}
 
@@ -99,14 +212,18 @@ class ActionGetFirstname(Action):
     def name(self):
         return "action_get_firstname"
 
-    async def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]):
+    async def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ):
         slots = ["firstname"]
 
         firstname = tracker.get_slot("firstname")
 
         if firstname is not None:
-            dispatcher.utter_message(
-                response="utter_greet", firstname=firstname)
+            dispatcher.utter_message(response="utter_greet", firstname=firstname)
 
         return [SlotSet(slot, None) for slot in slots]
 
@@ -125,21 +242,26 @@ class ActionGetQuote(Action):
         domain: Dict[Text, Any],
     ) -> List[Dict]:
         """Executes the action"""
-        slots = ["AA_quote_insurance_type", "quote_state",
-                 "quote_number_persons", "number", "state"]
+        slots = [
+            "AA_quote_insurance_type",
+            "quote_state",
+            "quote_number_persons",
+            "number",
+            "state",
+        ]
 
         # Build the quote from the provided data.
         insurance_type = tracker.get_slot("AA_quote_insurance_type")
         n_persons = int(tracker.get_slot("quote_number_persons"))
 
-        baseline_rate = MOCK_DATA["policy_quote"]["insurance_type"][insurance_type]
+        baseline_rate = MOCK_DATA["policy_quote"]["insurance_type"][insurance_type.lower()]
         final_quote = baseline_rate * n_persons
 
         msg_params = {
             "final_quote": final_quote,
             "insurance_type": insurance_type.capitalize(),
             "quote_state": tracker.get_slot("quote_state"),
-            "n_persons": n_persons
+            "n_persons": n_persons,
         }
         dispatcher.utter_message(response="utter_final_quote", **msg_params)
 
@@ -154,47 +276,51 @@ class ValidateQuoteForm(FormValidationAction):
         """Unique identifier for the action."""
         return "validate_quote_form"
 
-               
-
     def validate_AA_quote_insurance_type(
-            self,
-            value: Text,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any],
+        self,
+        value: Text,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
     ) -> Dict[Text, Any]:
         """Validates value of 'amount-of-money' slot"""
         insurance_type = value
-
-        if insurance_type.lower() not in ["auto", "health", "life", "home"]:
-            dispatcher.utter_message("Must select a valid type of insurance")
+        categories = [category.lower() for category in list_categories()]
+        x = "{}, " * (len(categories) - 1) + "{}."
+        if insurance_type.lower() not in categories:
+            dispatcher.utter_message(
+                f"I can only provide quotes for {x} Please choose one of those options.".format(
+                    *categories
+                )
+            )
             return {"AA_quote_insurance_type": None}
 
         return {"AA_quote_insurance_type": insurance_type}
 
     def validate_quote_state(
-            self,
-            value: Text,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any],
+        self,
+        value: Text,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
     ) -> Dict[Text, Any]:
         """Validates the state provided by user to get an insurance quote."""
         state_entity = next(tracker.get_latest_entity_values("state"), None)
 
         if state_entity not in US_STATES:
             dispatcher.utter_message(
-                f"{state_entity} is invalid. Please provide a valid state.")
+                f"{state_entity} is invalid. Please provide a valid state."
+            )
             return {"quote_state": None}
 
         return {"quote_state": state_entity}
 
     def validate_quote_number_persons(
-            self,
-            value: Text,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]
+        self,
+        value: Text,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
     ) -> Dict[Text, Any]:
         """Validates the number of persons entered is valid."""
         if tracker.get_intent_of_latest_message() == "stop":
@@ -210,8 +336,7 @@ class ValidateQuoteForm(FormValidationAction):
             return {"quote_number_persons": None}
 
         if int(value) <= 0:
-            dispatcher.utter_message(
-                "Number of people on policy must be >= 1.")
+            dispatcher.utter_message("Number of people on policy must be >= 1.")
             return {"quote_number_persons": None}
 
         return {"quote_number_persons": value}
@@ -231,8 +356,7 @@ class ActionStopQuote(Action):
         domain: Dict[Text, Any],
     ) -> List[Dict]:
         """Executes the action"""
-        slots = ["AA_quote_insurance_type",
-                 "quote_state", "quote_number_persons"]
+        slots = ["AA_quote_insurance_type", "quote_state", "quote_number_persons"]
 
         # Reset the slot values.
         return [SlotSet(slot, None) for slot in slots]
@@ -249,8 +373,9 @@ class ActionCheckClaimBalance(Action):
     ) -> List[EventType]:
         active_claim = tracker.get_slot("claim_id")
 
-        clm = next((c for c in MOCK_DATA["claims"] if str(
-            c["claim_id"]) == active_claim), None)
+        clm = next(
+            (c for c in MOCK_DATA["claims"] if str(c["claim_id"]) == active_claim), None
+        )
 
         has_outstanding_balance = clm["claim_balance"] > 0
 
@@ -258,24 +383,25 @@ class ActionCheckClaimBalance(Action):
 
         return [SlotSet("has_outstanding_balance", has_outstanding_balance)]
 
+
 # Buy Insurance Actions
 
 
 class ValidateBuyInsuranceForm(FormValidationAction):
-    """ Validates slots for buy insurance form """
+    """Validates slots for buy insurance form"""
 
     def name(self) -> Text:
-        """ unique identifier for the action """
+        """unique identifier for the action"""
         return "validate_buy_insurance_form"
 
     async def validate_insurance_policy_type(
-            self,
-            value: Text,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any],
+        self,
+        value: Text,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
     ) -> Dict[Text, Any]:
-        """Validates value of 'insurance-provider' slot"""
+        """Validates value of 'insurance_policy_type' slot"""
         if tracker.get_intent_of_latest_message() == "get_a_quote":
             return {"insurance_policy_type": None}
 
@@ -283,41 +409,50 @@ class ValidateBuyInsuranceForm(FormValidationAction):
 
         if isinstance(insurance_policy_type, list):
             insurance_policy_type = next(
-                tracker.get_latest_entity_values("quote_insurance_type"), None)
+                tracker.get_latest_entity_values("quote_insurance_type"), None
+            )
             # insurance_policy_type = insurance_policy_type[0]
 
         print(value, insurance_policy_type)
-
-        if insurance_policy_type.lower() not in list_categories(policy_categories):
+        categories = [category.lower() for category in list_categories()]
+        x = "{}, " * (len(categories) - 1) + "{}."
+        if insurance_policy_type.lower() not in categories:
             dispatcher.utter_message(
-                "Must select a valid insurance type")
+                f"You can only select from these available policies.  {x} \nPlease choose one of those options.".format(
+                    *categories
+                )
+            )
             return {"insurance_policy_type": None}
 
         return {"insurance_policy_type": insurance_policy_type}
 
     async def validate_insurance_provider(
-            self,
-            value: Text,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any],
+        self,
+        value: Text,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
     ) -> Dict[Text, Any]:
         """Validates value of 'insurance-provider' slot"""
         insurance_provider = value
         print(value)
 
-        if insurance_provider.lower() not in ["jubilee", "uap", "icea", "swico", "prudential", "britam"]:
-            dispatcher.utter_message("Must select a valid type of insurance")
+        if insurance_provider.lower() not in [
+            provider.lower() for provider in list_providers()
+        ]:
+            dispatcher.utter_message(
+                "We do not have policies for the selected provider, Choose from the given list!"
+            )
             return {"insurance_provider": None}
 
         return {"insurance_provider": insurance_provider}
 
     async def validate_number_of_persons(
-            self,
-            value: Text,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]
+        self,
+        value: Text,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
     ) -> Dict[Text, Any]:
         """Validates the number of persons entered is valid."""
         print(value)
@@ -346,22 +481,21 @@ class ValidateBuyInsuranceForm(FormValidationAction):
         print(f"number of persons: {n_persons}")
 
         if int(n_persons) <= 0:
-            dispatcher.utter_message(
-                "Number of people on policy must be >= 1.")
+            dispatcher.utter_message("Number of people on policy must be >= 1.")
             return {"number_of_persons": None}
 
         return {"quote_number_persons": n_persons}
 
     async def validate_fullname(
-            self,
-            value: Text,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any],
+        self,
+        value: Text,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
     ) -> Dict[Text, Any]:
         """Validates value of 'insurance-provider' slot"""
         print(value)
-        if tracker.get_intent_of_latest_message() == 'stop':
+        if tracker.get_intent_of_latest_message() == "stop":
             return {"fullname": None}
         fullname = value
 
@@ -371,7 +505,13 @@ class ValidateBuyInsuranceForm(FormValidationAction):
 
         return {"fullname": fullname}
 
-    async def validate_dob(self, value: Text, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any],) -> Dict[Text, Any]:
+    async def validate_dob(
+        self,
+        value: Text,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> Dict[Text, Any]:
         """Validates value of 'dob' slot"""
 
         # check whether entered date is a valid dob
@@ -387,15 +527,16 @@ class ValidateBuyInsuranceForm(FormValidationAction):
             return {"dob": dob}
         else:
             dispatcher.utter_message(
-                f"{dob}, is not in the required format, enter date as 'dd/mm/yyy' ")
+                f"{dob}, is not in the required format, enter date as 'dd/mm/yyy' "
+            )
             return {"dob": None}
 
     async def validate_coverage(
-            self,
-            value: Any,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]
+        self,
+        value: Any,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
     ) -> Dict[Text, Any]:
         """Validates whether the annual income entered is valid."""
 
@@ -414,24 +555,33 @@ class ValidateBuyInsuranceForm(FormValidationAction):
 
         if float(value) not in [40000.0, 70000.0, 100000.0]:
             dispatcher.utter_message(
-                "Enter an appropriate coverage as shown in the above list")
+                "Enter an appropriate coverage as shown in the above list"
+            )
             return {"coverage": None}
 
         return {"coverage": value}
 
-    async def validate_gender(self, value: Text, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any],) -> Dict[Text, Any]:
+    async def validate_gender(
+        self,
+        value: Text,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> Dict[Text, Any]:
         """Validates the 'gender' slot value"""
         if value.lower() not in ["male", "female"]:
             dispatcher.utter_message("Must Select a valid gender type")
             return {"gender": None}
         return {"gender": value}
 
-    async def validate_policy_duration(self, value: Text, dispatcher: CollectingDispatcher, tracker: Tracker, domain):
+    async def validate_policy_duration(
+        self, value: Text, dispatcher: CollectingDispatcher, tracker: Tracker, domain
+    ):
         """Validates the number of years of Policy duration."""
         if tracker.get_intent_of_latest_message() == "get_a_quote":
             return {"policy_duration": None}
 
-        duration = tracker.get_slot('policy_duration')
+        duration = tracker.get_slot("policy_duration")
         if duration is None:
             dispatcher.utter_message(f"Policy duration needs to be a number.")
             return {"policy_duration": None}
@@ -452,17 +602,18 @@ class ValidateBuyInsuranceForm(FormValidationAction):
 
         if int(duration) not in [3, 5, 10]:
             dispatcher.utter_message(
-                "policy_duration  must be  either  3, 5, or 10 years. Try again")
+                "policy_duration  must be  either  3, 5, or 10 years. Try again"
+            )
             return {"policy_duration": None}
 
         return {"policy_duration": duration}
 
     async def validate_annual_income(
-            self,
-            value: Text,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]
+        self,
+        value: Text,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
     ) -> Dict[Text, Any]:
         """Validates whether the annual income entered is valid."""
         if tracker.get_intent_of_latest_message() == "get_a_quote":
@@ -472,23 +623,21 @@ class ValidateBuyInsuranceForm(FormValidationAction):
         try:
             float(value)
         except TypeError:
-            dispatcher.utter_message(
-                f"Annual income aerned should be a number.")
+            dispatcher.utter_message(f"Annual income aerned should be a number.")
             return {"annual_income": None}
         except ValueError:
             dispatcher.utter_message("You must answer with a number.")
             return {"annual_income": None}
 
         if float(value) <= 10.0:
-            dispatcher.utter_message(
-                "Annual income must be greater than 10")
+            dispatcher.utter_message("Annual income must be greater than 10")
             return {"annual_income": None}
 
         return {"annual_income": value}
 
 
 class ActionBuyInsurance(Action):
-    """ Buy an Insurance Policy for a person """
+    """Buy an Insurance Policy for a person"""
 
     def name(self):
         return "action_buy_insurance"
@@ -500,8 +649,17 @@ class ActionBuyInsurance(Action):
         domain: Dict[Text, Any],
     ) -> List[Dict]:
 
-        slots = ["insurance_provider", "insurance_policy_type", "fullname",
-                 "dob", "gender", "number_of_persons", "coverage", "annual_income", "policy_duration"]
+        slots = [
+            "insurance_provider",
+            "insurance_policy_type",
+            "fullname",
+            "dob",
+            "gender",
+            "number_of_persons",
+            "coverage",
+            "annual_income",
+            "policy_duration",
+        ]
 
         # Buy the policy from provided data
         insurance_provider = tracker.get_slot("insurance_provider")
@@ -515,7 +673,16 @@ class ActionBuyInsurance(Action):
             policy_duration = 3
 
         if insurance_provider is not None:
-            baseline_rate = MOCK_DATA["policy_quote"]["insurance_type"][policy]
+            try:
+                baseline_rate = MOCK_DATA["policy_quote"]["insurance_type"][policy.lower()]
+            except KeyError:
+                dispatcher.utter_message("Could not find a rate for the provided policy type. Setting Rate to $100...")
+                baseline_rate = 100
+            except Exception as err:
+                dispatcher.utter_message("We got a problem while processing your request, Please try again")
+                return AllSlotsReset()
+
+                
             final_rate = baseline_rate * int(policy_duration) * int(n_persons)
 
             msg_params = {
@@ -528,13 +695,14 @@ class ActionBuyInsurance(Action):
                 "policy_holder": policy_holder,
                 "sum_assured": sum_assured,
                 "policy_duration": policy_duration,
-                "n_persons": n_persons
+                "n_persons": n_persons,
             }
-            dispatcher.utter_message(
-                response="utter_buy_insurance", **msg_params)
+            dispatcher.utter_message(response="utter_buy_insurance", **msg_params)
         else:
             dispatcher.utter_message(
-                "The selected Insurance policy is not provided by the provider")
+                "The selected Insurance policy is not provided by the provider"
+            )
+            return AllSlotsReset()
 
         return AllSlotsReset()
 
@@ -553,21 +721,23 @@ class AskConfirmAddress(Action):
     ) -> List[EventType]:
         # Load the member address from the JSON document.
         address_slots = {
-            "address_street": MOCK_DATA["member_info"]["home_address"]["address_street"],
+            "address_street": MOCK_DATA["member_info"]["home_address"][
+                "address_street"
+            ],
             "address_city": MOCK_DATA["member_info"]["home_address"]["address_city"],
             "address_state": MOCK_DATA["member_info"]["home_address"]["address_state"],
-            "address_zip": MOCK_DATA["member_info"]["home_address"]["address_zip"]
+            "address_zip": MOCK_DATA["member_info"]["home_address"]["address_zip"],
         }
 
         # Build the full address.
-        address_line_two = f"{address_slots['address_city']}, {address_slots['address_state']} " \
-                           f"{address_slots['address_zip']}"
-        full_address = "\n".join(
-            [address_slots['address_street'], address_line_two])
+        address_line_two = (
+            f"{address_slots['address_city']}, {address_slots['address_state']} "
+            f"{address_slots['address_zip']}"
+        )
+        full_address = "\n".join([address_slots["address_street"], address_line_two])
         address_slots["full_address"] = full_address
 
-        dispatcher.utter_message(
-            response="utter_confirm_address", **address_slots)
+        dispatcher.utter_message(response="utter_confirm_address", **address_slots)
 
         return [SlotSet(k, v) for k, v in address_slots.items()]
 
@@ -581,10 +751,12 @@ class ActionVerifyAddress(Action):
     def run(
         self, dispather: CollectingDispatcher, tracker: Tracker, domain: Dict
     ) -> List[EventType]:
-        address_slots = ["address_street",
-                         "address_city",
-                         "address_state",
-                         "address_zip"]
+        address_slots = [
+            "address_street",
+            "address_city",
+            "address_state",
+            "address_zip",
+        ]
 
         verify_address = tracker.get_slot("verify_address")
 
@@ -604,26 +776,27 @@ class ActionResetAddress(Action):
     def run(
         self, dispather: CollectingDispatcher, tracker: Tracker, domain: Dict
     ) -> List[EventType]:
-        address_slots = ["address_street",
-                         "address_city",
-                         "address_state",
-                         "address_zip",
-                         "full_address"]
+        address_slots = [
+            "address_street",
+            "address_city",
+            "address_state",
+            "address_zip",
+            "full_address",
+        ]
 
         return [SlotSet(a, None) for a in address_slots]
 
 
 class ValidateVerifyAddressForm(FormValidationAction):
-
     def name(self) -> Text:
         return "validate_verify_address_form"
 
     async def validate_verify_address(
-            self,
-            value: Text,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any],
+        self,
+        value: Text,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
     ) -> Dict[Text, Any]:
         verify_address = tracker.get_slot("verify_address")
 
@@ -631,7 +804,6 @@ class ValidateVerifyAddressForm(FormValidationAction):
 
 
 class ActionGetAddress(Action):
-
     def name(self) -> Text:
         return "action_get_address"
 
@@ -639,27 +811,30 @@ class ActionGetAddress(Action):
         self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
     ) -> List[EventType]:
         address_slots = {
-            "address_street": MOCK_DATA["member_info"]["home_address"]["address_street"],
+            "address_street": MOCK_DATA["member_info"]["home_address"][
+                "address_street"
+            ],
             "address_city": MOCK_DATA["member_info"]["home_address"]["address_city"],
             "address_state": MOCK_DATA["member_info"]["home_address"]["address_state"],
-            "address_zip": MOCK_DATA["member_info"]["home_address"]["address_zip"]
+            "address_zip": MOCK_DATA["member_info"]["home_address"]["address_zip"],
         }
 
         # Build the full address.
-        address_line_two = f"{address_slots['address_city']}, {address_slots['address_state']} " \
-                           f"{address_slots['address_zip']}"
-        full_address = "\n".join(
-            [address_slots['address_street'], address_line_two])
+        address_line_two = (
+            f"{address_slots['address_city']}, {address_slots['address_state']} "
+            f"{address_slots['address_zip']}"
+        )
+        full_address = "\n".join([address_slots["address_street"], address_line_two])
         address_slots["full_address"] = full_address
 
         dispatcher.utter_message(
-            text=f"The address we have on file is:\n{full_address}")
+            text=f"The address we have on file is:\n{full_address}"
+        )
 
         return []
 
 
 class ActionUpdateAddress(Action):
-
     def name(self) -> Text:
         return "action_update_address"
 
@@ -675,8 +850,7 @@ class ActionUpdateAddress(Action):
         address_line_two = f"{address_city}, {address_state} {address_zip}"
         full_address = "\n".join([address_street, address_line_two])
 
-        dispatcher.utter_message(
-            "Thank you! Your address has been changed to:")
+        dispatcher.utter_message("Thank you! Your address has been changed to:")
         dispatcher.utter_message(full_address)
 
         # Update the address in the data.
@@ -684,7 +858,7 @@ class ActionUpdateAddress(Action):
             "address_street": address_street,
             "address_city": address_city,
             "address_state": address_state,
-            "address_zip": address_zip
+            "address_zip": address_zip,
         }
 
         return [SlotSet("verify_address", None)]
@@ -697,11 +871,11 @@ class ValidateChangeAddressForm(FormValidationAction):
         return "validate_change_address_form"
 
     async def validate_address_state(
-            self,
-            slot_value: Text,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]
+        self,
+        slot_value: Text,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
     ) -> Dict[Text, Any]:
 
         if isinstance(slot_value, list):
@@ -709,7 +883,8 @@ class ValidateChangeAddressForm(FormValidationAction):
 
         if slot_value.upper() not in US_STATES:
             dispatcher.utter_message(
-                f"{slot_value} is invalid. Please provide a valid state.")
+                f"{slot_value} is invalid. Please provide a valid state."
+            )
             return {"address_state": None}
 
         return {"address_state": slot_value}
@@ -717,8 +892,8 @@ class ValidateChangeAddressForm(FormValidationAction):
 
 # New ID Card Actions
 
-class ActionNewIdCard(Action):
 
+class ActionNewIdCard(Action):
     def name(self) -> Text:
         return "action_new_id_card"
 
@@ -732,7 +907,6 @@ class ActionNewIdCard(Action):
 
 
 class ActionRecentClaims(Action):
-
     def name(self) -> Text:
         return "action_ask_recent_claims"
 
@@ -760,6 +934,7 @@ class ActionRecentClaims(Action):
 
 # Get Status of Claim
 
+
 class ActionClaimStatus(Action):
     """Gets the status of the user's last claim."""
 
@@ -776,21 +951,22 @@ class ActionClaimStatus(Action):
 
         # Get the claim provided by the user.
         user_clm_id = tracker.get_slot("claim_id")
-        clm = next((c for c in MOCK_DATA["claims"] if str(
-            c["claim_id"]) == user_clm_id), None)
+        clm = next(
+            (c for c in MOCK_DATA["claims"] if str(c["claim_id"]) == user_clm_id), None
+        )
 
         # Display details about the selected claims.
         if clm:
-            formatted_date = str(datetime.datetime.strptime(
-                str(clm["claim_date"]), "%Y%m%d").date())
+            formatted_date = str(
+                datetime.datetime.strptime(str(clm["claim_date"]), "%Y%m%d").date()
+            )
             clm_params = {
                 "claim_date": formatted_date,
                 "claim_id": clm["claim_id"],
                 "claim_balance": f"${str(clm['claim_balance'])}",
-                "claim_status": clm["claim_status"]
+                "claim_status": clm["claim_status"],
             }
-            dispatcher.utter_message(
-                response="utter_claim_detail", **clm_params)
+            dispatcher.utter_message(response="utter_claim_detail", **clm_params)
 
             return [SlotSet("has_outstanding_balance", True)]
 
@@ -808,11 +984,11 @@ class ValidateGetClaimForm(FormValidationAction):
         return "validate_get_claim_form"
 
     async def validate_claim_id(
-            self,
-            value: Text,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any],
+        self,
+        value: Text,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
     ) -> Dict[Text, Any]:
         """Checks if the claim ID is valid for the member."""
         user_claims = MOCK_DATA["claims"]
@@ -824,7 +1000,8 @@ class ValidateGetClaimForm(FormValidationAction):
 
         if str(claim_id) not in [clm["claim_id"] for clm in user_claims]:
             dispatcher.utter_message(
-                "The Claim ID you entered is not valid. Please check and try again.")
+                "The Claim ID you entered is not valid. Please check and try again."
+            )
             return {"claim_id": None}
         else:
             return {"claim_id": claim_id}
@@ -863,7 +1040,7 @@ class ValidateClaimStatusForm(FormValidationAction):
             return {"recent_claims": text_of_last_user_message}
 
     async def extract_claim_id(
-            self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
+        self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
     ) -> Dict[Text, Any]:
         if tracker.slots["requested_slot"] == "claim_id":
             print("entity", tracker.get_latest_entity_values("claim_id"))
@@ -872,30 +1049,29 @@ class ValidateClaimStatusForm(FormValidationAction):
             return {"claim_id": text_of_last_user_message}
 
     async def validate_claim_id(
-            self,
-            value: Text,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any],
+        self,
+        value: Text,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
     ) -> Dict[Text, Any]:
         """Checks if the claim ID is valid for the member."""
-        valid_claims = [
-            "123456",
-            "234567"
-        ]
+        valid_claims = ["123456", "234567"]
         claim_id = tracker.get_slot("claim_id")
 
         print("claim other validate", claim_id)
 
         if str(claim_id) not in valid_claims:
             dispatcher.utter_message(
-                "The Claim ID you entered is not valid. Please check and try again.")
+                "The Claim ID you entered is not valid. Please check and try again."
+            )
             return {"claim_id": None}
 
         return {"claim_id": claim_id}
 
 
 # File New Claim Actions
+
 
 class ActionStopNewClaim(Action):
     """Stops quote form and clears collected data."""
@@ -911,15 +1087,18 @@ class ActionStopNewClaim(Action):
         domain: Dict[Text, Any],
     ) -> List[Dict]:
         """Executes the action"""
-        reset_slots = ["claim_amount_submit",
-                       "confirm_file_new_claim", "number", "amount-of-money"]
+        reset_slots = [
+            "claim_amount_submit",
+            "confirm_file_new_claim",
+            "number",
+            "amount-of-money",
+        ]
 
         # Reset the slot values.
         return [SlotSet(slot, None) for slot in reset_slots]
 
 
 class ActionFileNewClaimForm(Action):
-
     def name(self) -> Text:
         return "action_file_new_claim_form"
 
@@ -932,32 +1111,34 @@ class ActionFileNewClaimForm(Action):
 
         if tracker.get_slot("confirm_file_new_claim") == "yes":
             # Submit a new claim.
-            claim_id = "NC" + \
-                "".join([str(random.randint(0, 9)) for i in range(6)])
+            claim_id = "NC" + "".join([str(random.randint(0, 9)) for i in range(6)])
             claim_obj = {
                 "claim_id": claim_id,
                 "claim_balance": tracker.get_slot("claim_amount_submit"),
-                "claim_date": datetime.datetime.strftime(datetime.datetime.today(), "%Y%m%d"),
-                "claim_status": "Pending"
+                "claim_date": datetime.datetime.strftime(
+                    datetime.datetime.today(), "%Y%m%d"
+                ),
+                "claim_status": "Pending",
             }
 
             MOCK_DATA["claims"].append(claim_obj)
             dispatcher.utter_message(
-                f"Your claim has been submitted.\n\nFor reference the claim id is: {claim_id}")
+                f"Your claim has been submitted.\n\nFor reference the claim id is: {claim_id}"
+            )
         else:
-            dispatcher.utter_message(
-                "Ok. Submitting your claim has been canceled.")
+            dispatcher.utter_message("Ok. Submitting your claim has been canceled.")
 
-        reset_slots = ["claim_amount_submit",
-                       "confirm_file_new_claim",
-                       "number",
-                       "amount-of-money",
-                       "AA_quote_insurance_type"]
+        reset_slots = [
+            "claim_amount_submit",
+            "confirm_file_new_claim",
+            "number",
+            "amount-of-money",
+            "AA_quote_insurance_type",
+        ]
         return [SlotSet(slot, None) for slot in reset_slots]
 
 
 class ValidateFileNewClaimForm(FormValidationAction):
-
     def name(self) -> Text:
         return "validate_file_new_claim_form"
 
@@ -969,22 +1150,27 @@ class ValidateFileNewClaimForm(FormValidationAction):
         domain: DomainDict,
     ) -> Dict[Text, Any]:
         """Validate insurance type value."""
-
-        if slot_value.lower() not in ["health", "auto", "life", "home"]:
-            dispatcher.utter_message("I can only provide quotes for home, health, life, or home insurance. "
-                                     "Please choose one of those options.")
+        categories = [category.lower() for category in list_categories()]
+        # Pass category names to response as options the user should select from.
+        x = "{}, " * (len(categories) - 1) + "{}."
+        if slot_value.lower() not in categories:
+            dispatcher.utter_message(
+                f"I can only provide quotes for {x} Please choose one of those options.".format(
+                    *categories
+                )
+            )
             return {"AA_quote_insurance_type": None}
-        elif slot_value.lower() in ["health", "auto", "life", "home"]:
+        elif slot_value.lower() in categories:
             return {"AA_quote_insurance_type": slot_value}
 
         return {"AA_quote_insurance_type": None}
 
     def validate_claim_amount_submit(
-            self,
-            value: Text,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any],
+        self,
+        value: Text,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
     ) -> Dict[Text, Any]:
 
         # Submitted amount must be a number.
@@ -992,7 +1178,8 @@ class ValidateFileNewClaimForm(FormValidationAction):
             submitted_amount = float(value)
         except ValueError:
             dispatcher.utter_message(
-                "You must submit a numeric value for the claim amount.")
+                "You must submit a numeric value for the claim amount."
+            )
             return {"claim_amount_submit": None}
 
         # Submitted amount must be greater than 0.
@@ -1000,13 +1187,15 @@ class ValidateFileNewClaimForm(FormValidationAction):
             assert submitted_amount > 0
         except AssertionError:
             dispatcher.utter_message(
-                "The amount you are claiming must be greater than zero.")
+                "The amount you are claiming must be greater than zero."
+            )
             return {"claim_amount_submit": None}
 
         return {"claim_amount_submit": submitted_amount}
 
 
 # Scroll Claims Action
+
 
 class ActionScrollClaimsExit(Action):
     """Cleans up claim scrolling upon form exit."""
@@ -1020,19 +1209,29 @@ class ActionScrollClaimsExit(Action):
         tracker: Tracker,
         domain: Dict[Text, Any],
     ) -> List[Dict]:
-        reset_slots = ["scroll_status", "scroll_claims",
-                       "page", "scroll_active_claim"]
+        reset_slots = ["scroll_status", "scroll_claims", "page", "scroll_active_claim"]
 
         if tracker.get_slot("scroll_status") == "select":
-            reset_slots = ["scroll_status", "scroll_claims",
-                           "page", "scroll_active_claim"]
+            reset_slots = [
+                "scroll_status",
+                "scroll_claims",
+                "page",
+                "scroll_active_claim",
+            ]
 
-            return [SlotSet(s, None) for s in reset_slots] + [SlotSet("claim_id", tracker.get_slot("scroll_active_claim"))]
-        elif tracker.get_slot("scroll_status") == "cancel":
-            reset_slots = ["scroll_status", "scroll_claims",
-                           "page", "scroll_active_claim"]
             return [SlotSet(s, None) for s in reset_slots] + [
-                SlotSet("scroll_status", "cancel")]
+                SlotSet("claim_id", tracker.get_slot("scroll_active_claim"))
+            ]
+        elif tracker.get_slot("scroll_status") == "cancel":
+            reset_slots = [
+                "scroll_status",
+                "scroll_claims",
+                "page",
+                "scroll_active_claim",
+            ]
+            return [SlotSet(s, None) for s in reset_slots] + [
+                SlotSet("scroll_status", "cancel")
+            ]
 
         return [SlotSet(s, None) for s in reset_slots]
 
@@ -1069,15 +1268,17 @@ class ActionAskScrollClaims(Action):
             msg_template = "utter_scroll_status_next"
 
         dispatcher.utter_message(
-            response="utter_claim_detail", **scroll_response["claims"])
+            response="utter_claim_detail", **scroll_response["claims"]
+        )
         dispatcher.utter_message(response=msg_template)
 
-        return [SlotSet("page", scroll_response["page"]),
-                SlotSet("scroll_active_claim", scroll_response["claims"]["claim_id"])]
+        return [
+            SlotSet("page", scroll_response["page"]),
+            SlotSet("scroll_active_claim", scroll_response["claims"]["claim_id"]),
+        ]
 
 
 class ActionValidateScrollClaims(FormValidationAction):
-
     def name(self) -> Text:
         return "validate_scroll_claims_form"
 
@@ -1104,6 +1305,7 @@ class ActionValidateScrollClaims(FormValidationAction):
 
 # Pay Claim Actions
 
+
 class ActionPayClaim(Action):
     """Gets the status of the user's last claim."""
 
@@ -1117,8 +1319,14 @@ class ActionPayClaim(Action):
         tracker: Tracker,
         domain: Dict[Text, Any],
     ) -> List[Dict]:
-        reset_slots = ["claim_balance", "amount-of-money",
-                       "confirm_payment", "number", "claim_id", "claim_pay_amount"]
+        reset_slots = [
+            "claim_balance",
+            "amount-of-money",
+            "confirm_payment",
+            "number",
+            "claim_id",
+            "claim_pay_amount",
+        ]
 
         # Get the claim provided by the user.
         user_clm_id = tracker.get_slot("claim_id")
@@ -1133,14 +1341,13 @@ class ActionPayClaim(Action):
         msg_params = {
             "claim_id": user_clm_id,
             "amount_to_pay": amount_to_pay,
-            "claim_balance": claim_balance - amount_to_pay
+            "claim_balance": claim_balance - amount_to_pay,
         }
         for c in MOCK_DATA["claims"]:
             if c["claim_id"] == user_clm_id:
                 c.update({"claim_balance": claim_balance - amount_to_pay})
 
-        dispatcher.utter_message(
-            response="utter_claim_payment_success", **msg_params)
+        dispatcher.utter_message(response="utter_claim_payment_success", **msg_params)
 
         return [SlotSet(slot, None) for slot in reset_slots]
 
@@ -1152,29 +1359,34 @@ class ActionCancelPayment(Action):
         return "action_cancel_payment"
 
     async def run(
-            self,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any],
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
     ) -> List[Dict]:
         dispatcher.utter_message(response="utter_cancel_payment")
 
-        reset_slots = ["claim_balance", "claim_pay_amount",
-                       "claim_id", "confirm_payment", "amount-of-money", "number"]
+        reset_slots = [
+            "claim_balance",
+            "claim_pay_amount",
+            "claim_id",
+            "confirm_payment",
+            "amount-of-money",
+            "number",
+        ]
         return [SlotSet(slot, None) for slot in reset_slots]
 
 
 class ValidatePayClaimForm(FormValidationAction):
-
     def name(self) -> Text:
         return "validate_pay_claim_form"
 
     async def required_slots(
-            self,
-            slots_mapped_in_domain: List[Text],
-            dispatcher: "CollectingDispatcher",
-            tracker: "Tracker",
-            domain: "DomainDict",
+        self,
+        slots_mapped_in_domain: List[Text],
+        dispatcher: "CollectingDispatcher",
+        tracker: "Tracker",
+        domain: "DomainDict",
     ) -> Optional[List[Text]]:
 
         if tracker.get_slot("claim_balance") == 0:
@@ -1183,7 +1395,7 @@ class ValidatePayClaimForm(FormValidationAction):
         return slots_mapped_in_domain
 
     async def extract_amount_of_money(
-            self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
+        self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict
     ):
         # Check if the user provided a proper dollar amount.
         if tracker.slots["requested_slot"] == "amount-of-money":
@@ -1193,7 +1405,10 @@ class ValidatePayClaimForm(FormValidationAction):
             # Check contents of latest message before for a valid dollar amount.
             try:
                 ent = next(
-                    item for item in last_message["entities"] if item["entity"] == "amount-of-money")
+                    item
+                    for item in last_message["entities"]
+                    if item["entity"] == "amount-of-money"
+                )
                 amount_to_pay = ent["value"]
                 return {"amount-of-money": amount_to_pay}
             except StopIteration:
@@ -1201,7 +1416,10 @@ class ValidatePayClaimForm(FormValidationAction):
 
             try:
                 ent = next(
-                    item for item in last_message["entities"] if item["entity"] == "number")
+                    item
+                    for item in last_message["entities"]
+                    if item["entity"] == "number"
+                )
                 amount_to_pay = ent["value"]
                 return {"amount-of-money": amount_to_pay}
             except StopIteration:
@@ -1210,11 +1428,11 @@ class ValidatePayClaimForm(FormValidationAction):
             return {"amount-of-money": amount_to_pay}
 
     def validate_claim_id(
-            self,
-            slot_value: Any,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: DomainDict,
+        self,
+        slot_value: Any,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: DomainDict,
     ) -> Dict[Text, Any]:
         """Checks if the claim ID is valid for the member."""
         user_claims = MOCK_DATA["claims"]
@@ -1225,50 +1443,65 @@ class ValidatePayClaimForm(FormValidationAction):
 
         if str(claim_id) not in [clm["claim_id"] for clm in user_claims]:
             dispatcher.utter_message(
-                "The Claim ID you entered is not valid. Please check and try again.")
+                "The Claim ID you entered is not valid. Please check and try again."
+            )
             return {"claim_id": None}
 
-        clm = next((c for c in MOCK_DATA["claims"] if str(
-            c["claim_id"]) == claim_id), None)
+        clm = next(
+            (c for c in MOCK_DATA["claims"] if str(c["claim_id"]) == claim_id), None
+        )
         if clm["claim_balance"] == 0:
             dispatcher.utter_message(f"Claim {claim_id} is fully paid.")
 
-        return {"claim_id": claim_id, "claim_balance": clm["claim_balance"], "number": None}
+        return {
+            "claim_id": claim_id,
+            "claim_balance": clm["claim_balance"],
+            "number": None,
+        }
 
     def validate_claim_pay_amount(
-            self,
-            slot_value: Any,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: DomainDict,
+        self,
+        slot_value: Any,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: DomainDict,
     ) -> Dict[Text, Any]:
         if tracker.slots.get("requested_slot") == "claim_pay_amount":
             claim_id = tracker.get_slot("claim_id")
             payment_amount = tracker.get_slot("claim_pay_amount")
-            clm = next((c for c in MOCK_DATA["claims"] if str(
-                c["claim_id"]) == claim_id), None)
+            clm = next(
+                (c for c in MOCK_DATA["claims"] if str(c["claim_id"]) == claim_id), None
+            )
 
             # Check that a valid number is provided.
             try:
                 payment_amount = float(payment_amount)
             except TypeError:
                 dispatcher.utter_message(
-                    "Please enter a valid number as your payment amount.")
+                    "Please enter a valid number as your payment amount."
+                )
                 return {"claim_pay_amount": None}
 
             # Check that the payment is greater than zero.
             if payment_amount <= 0:
-                dispatcher.utter_message(
-                    "Your payment must be greater than $0.")
+                dispatcher.utter_message("Your payment must be greater than $0.")
                 return {"claim_pay_amount": None}
 
             # Check that the payment amount doesn't exceed the amount owed on the claim.
             if payment_amount > clm["claim_balance"]:
-                dispatcher.utter_message(f"The amount you want to pay, ${str(payment_amount)}, is greater than the amount "
-                                         f"owed, ${str(clm['claim_balance'])}")
-                return {"claim_pay_amount": clm["claim_balance"], "claim_balance": clm["claim_balance"]}
+                dispatcher.utter_message(
+                    f"The amount you want to pay, ${str(payment_amount)}, is greater than the amount "
+                    f"owed, ${str(clm['claim_balance'])}"
+                )
+                return {
+                    "claim_pay_amount": clm["claim_balance"],
+                    "claim_balance": clm["claim_balance"],
+                }
 
-            return {"claim_pay_amount": payment_amount, "claim_balance": clm["claim_balance"]}
+            return {
+                "claim_pay_amount": payment_amount,
+                "claim_balance": clm["claim_balance"],
+            }
 
         return {"claim_pay_amount": None}
 
@@ -1290,29 +1523,33 @@ def claims_scroll(curr_page, scroll_status):
     # Get claims on the page.
     page_claims = MOCK_DATA["claims"][curr_page]
     clm_params = {
-        "claim_date": str(datetime.datetime.strptime(str(page_claims["claim_date"]), "%Y%m%d").date()),
+        "claim_date": str(
+            datetime.datetime.strptime(str(page_claims["claim_date"]), "%Y%m%d").date()
+        ),
         "claim_id": page_claims["claim_id"],
         "claim_balance": f"${str(page_claims['claim_balance'])}",
-        "claim_status": page_claims["claim_status"]
+        "claim_status": page_claims["claim_status"],
     }
 
-    return {"page": curr_page,
-            "claims": clm_params,
-            "is_last_page": curr_page + 1 >= len(MOCK_DATA["claims"])}
+    return {
+        "page": curr_page,
+        "claims": clm_params,
+        "is_last_page": curr_page + 1 >= len(MOCK_DATA["claims"]),
+    }
 
 
 class NotifyNewpolicies(Action):
-
     def name(self) -> Text:
 
         return "notify_new_policies"
 
     async def run(
-        self, dispatcher, tracker: Tracker, domain: Dict[Text, Any],
+        self,
+        dispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
     ) -> List[Dict[Text, Any]]:
 
-        policies = [policy["policy_name"]
-                    for policy in NEW_POLICIES["hot_policies"]]
-        dispatcher.utter_message(
-            text=f"The hottest policy available is {policies[0]}")
+        policies = [policy["policy_name"] for policy in NEW_POLICIES["hot_policies"]]
+        dispatcher.utter_message(text=f"The hottest policy available is {policies[0]}")
         return []
