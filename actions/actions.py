@@ -680,7 +680,7 @@ class ActionBuyInsurance(Action):
                 baseline_rate = 100
             except Exception as err:
                 dispatcher.utter_message("We got a problem while processing your request, Please try again")
-                return AllSlotsReset()
+                return [AllSlotsReset()]
 
                 
             final_rate = baseline_rate * int(policy_duration) * int(n_persons)
@@ -702,9 +702,9 @@ class ActionBuyInsurance(Action):
             dispatcher.utter_message(
                 "The selected Insurance policy is not provided by the provider"
             )
-            return AllSlotsReset()
+            return [AllSlotsReset()]
 
-        return AllSlotsReset()
+        return [AllSlotsReset()]
 
 
 # Change Address Actions
